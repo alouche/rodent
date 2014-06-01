@@ -83,6 +83,8 @@ Restart your existing shell or open an new one and you are set. Type "rodent".
 
 > rodent install -p freebsd_amd64 go1.2.2
 
+For more info, refer to [cross-compilation environment](https://github.com/alouche/rodent/wiki/cross-compilation-setup)
+
 ## Disclaimer
 
 This project is relatively new and not perfect. It still requires a lot of work and does not pretend to be better than the numerous awesome tools the Golang community has created. It is just one way of tackling "Go version and dependency management", if you like it, use it and feel free to contribute.
