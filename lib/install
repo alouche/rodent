@@ -107,7 +107,7 @@ install_binary() {
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/pkg/${GOOS}_$GOARCH/" "$RODENT_GOROOT_TOP/$version/pkg/"
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/src/pkg/runtime/z"*"_${GOOS}_$GOARCH."* "$RODENT_GOROOT_TOP/$version/src/pkg/runtime/"
 
-  "$RODENT_GOROOT_TOP/$version/pkg/tool/$cur_platform/dist" bootstrap -v
+  "$RODENT_GOROOT_TOP/$version/bin/go" tool dist bootstrap -v
 
   info "cleanup download"
   __cleanup "$tmpdir"
