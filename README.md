@@ -57,7 +57,7 @@ You get the idea... so feel free to refer to the Rodent Variables guide.
 
 Add in your .bashrc, profile etc.
 
-> source "/my/path/to/rodent"
+> [[ -s "/my/path/to/rodent" ]] && source "/my/path/to/rodent"
 
 Restart your existing shell or open an new one and you are set. Type "rodent".
 
