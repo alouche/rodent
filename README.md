@@ -49,7 +49,7 @@ This is achieved without getting in your way or hijacking your shell executables
   or
   > "export RODENT_ENV=experimental; go build"
 
-You get the idea... so feel free to refer to the Rodent Variables guide.
+You get the idea... so feel free to refer to the [rodentrc guide](https://github.com/alouche/rodent/wiki/rodentrc-file).
 
 ## Setup
 
