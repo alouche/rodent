@@ -1,4 +1,5 @@
 # rodent
+[![Build Status](https://travis-ci.org/alouche/rodent.svg?branch=master)](https://travis-ci.org/alouche/rodent)
 
 rodent is a shell (bash) application which:
 
@@ -58,7 +59,7 @@ Add in your .bashrc, profile etc.
 
 > source "/my/path/to/rodent"
 
-Restart your existing shell or open an new one and you are set. Type "rodent", press <Enter>
+Restart your existing shell or open an new one and you are set. Type "rodent".
 
 ## Usage
 
