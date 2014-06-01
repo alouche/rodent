@@ -11,13 +11,6 @@ rodent is a shell (bash) application which:
 
 This is achieved without getting in your way or hijacking your shell executables/builtins by making use of [shims](http://en.wikipedia.org/wiki/Shim_%28computing%29).
 
-## Why?
-
-* I wanted something light/small which allowed all the above while being transparent and out of the way.
-* Managing and tracking my third party libraries by maintaining a separate directory per project which I could simply "tar; cp and or even git submodule.." 
-* I prefer using a custom GOPATH per project (or sometimes have a unique GOPATH for a subset of projects) and wanted to keep the "standard go workflow way of things" while maintaining that flexiblity/option.
-* This is an experiment.
-
 ## Highlight Features
 
 * Define a specific go version per project source/directory
@@ -66,6 +59,7 @@ Restart your existing shell or open an new one and you are set. Type "rodent".
 ### List upstream Golang release
 
 > rodent install -l
+
 > Available versions:
 >  go1.3beta1
 >  go1.3beta2
@@ -85,7 +79,14 @@ Restart your existing shell or open an new one and you are set. Type "rodent".
 
 For more info, refer to [cross-compilation environment](https://github.com/alouche/rodent/wiki/cross-compilation-setup)
 
-## Disclaimer
+## Why this project?
+
+* I wanted something light/small which allowed all the above while being transparent and out of the way.
+* Managing and tracking my third party libraries by maintaining a separate directory per project which I could simply "tar; cp and or even git submodule.." 
+* I prefer using a custom GOPATH per project (or sometimes have a unique GOPATH for a subset of projects) and wanted to keep the "standard go workflow way of things" while maintaining that flexiblity/option.
+* This is an experiment.
+
+### Disclaimer
 
 This project is relatively new and not perfect. It still requires a lot of work and does not pretend to be better than the numerous awesome tools the Golang community has created. It is just one way of tackling "Go version and dependency management", if you like it, use it and feel free to contribute.
 
