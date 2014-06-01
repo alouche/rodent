@@ -17,21 +17,9 @@ This is achieved without getting in your way by making use of [shims](http://en.
 * I prefer using a custom GOPATH per project (or sometimes have a unique GOPATH for a subset of projects) and wanted to keep the "standard go workflow way of things" while maintaining that flexiblity/option.
 * This is an experiment.
 
-## Setup
-
-> git clone http://github.com/alouhe/rodent.git /my/path/to/rodent
-
-Add in your .bashrc, profile etc.
-
-> source "/my/path/to/rodent"
-
-Restart your existing shell or open an new one and you are set. Type "rodent", press <Enter>
-
-Refer to the Quick Start guide.
-
 ## Highlight Features
 
-* Define a specific go version per project source
+* Define a specific go version per project source/directory
   > echo "gover=go1.2.2 >> .rodentrc
 
   run "go build"
@@ -61,6 +49,19 @@ Refer to the Quick Start guide.
   > "export RODENT_ENV=experimental; go build"
 
 You get the idea... so feel free to refer to the Rodent Variables guide.
+
+## Setup
+
+> git clone http://github.com/alouhe/rodent.git /my/path/to/rodent
+
+Add in your .bashrc, profile etc.
+
+> source "/my/path/to/rodent"
+
+Restart your existing shell or open an new one and you are set. Type "rodent", press <Enter>
+
+Refer to the Quick Start guide.
+
 
 ## Disclaimer
 
