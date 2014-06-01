@@ -5,7 +5,7 @@ rodent is a shell (bash) application which:
 
 * Manages multiple releases of Go.
 * Allows you to test/build your projects against multiple Go releases.
-* Allows cross-compile builds for different platform builds (cgo/stdlib [workaround](https://groups.google.com/d/msg/golang-nuts/2XoGUvBalcw/ErSWiTlO17kJ)).
+* Allows cross-compile builds for different platform targets (cgo/stdlib [workaround](https://groups.google.com/d/msg/golang-nuts/2XoGUvBalcw/ErSWiTlO17kJ)).
 * Manages/tracks librairies dependencies by expanding the GOPATH
 * Create separate workflows within a project per environment (i.e: build projectA with ENV="PRD" on go1.2.2 and ENV="DEV" on go1.3beta2)
 
