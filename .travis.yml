@@ -1,3 +1,0 @@
-install: git clone https://github.com/alouche/rodent.git
-script: ./run-tests.sh
-language: c
