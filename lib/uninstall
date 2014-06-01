@@ -1,0 +1,50 @@
+## Usage: rodent uninstall <version>
+##        -f  Force uninstall even if in use 
+
+assess_if_in_use() {
+  local version="$1"
+  local sys_version=($(__go_version))
+
+  if [[ ${sys_version[2]} = "$version" ]]
+  then
+    info "this version is currently in use"
+    fatal "use -f to ignore this error"
+  fi
+
+  return
+}
+
+while getopts ":hf" opts
+do
+  case $opts in
+  h|help|\?)
+    usage "$1"
+    ;;
+  f|force)
+    force=1
+    ;;
+  *)
+    usage "$1"
+  esac
+done
+
+shift $((OPTIND - 1))
+
+golang_version="$1"
+
+[[ -z "$golang_version" ]] && usage "uninstall"
+
+target="$RODENT_GOROOT_TOP/$golang_version"
+
+[[ -d "$target" ]] || fatal "this version could not be found at $RODENT_GOROOT_TOP"
+
+(( force == 1 )) || {
+  assess_if_in_use "$golang_version"
+}
+
+rm -Rf "$target" || fatal "failed to remove $target"
+
+display "$golang_version removed"
+
+#TODO
+#reset shell version to next suited installed version?

@@ -1,0 +1,17 @@
+describe "help"
+
+it_shows_usage_with_no_args() {
+  ./rodent | grep Usage
+}
+
+it_shows_usage_with_wrong_arg() {
+  ./rodent foo | grep Usage
+}
+
+it_shows_usage_with_help_arg() {
+  ./rodent help | grep Usage
+}
+
+it_shows_usage_with_install_arg() {
+  ./rodent install |grep Usage
+}

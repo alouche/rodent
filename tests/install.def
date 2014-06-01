@@ -1,0 +1,22 @@
+describe "install/versions"
+
+it_shows_upstream_go_distributions() {
+  ./rodent install -l
+}
+
+it_installs_a_go_release_and_set_globally() {
+  ./rodent install -s "$RODENT_GOLANG_VERSION"
+}
+
+it_list_installed_versions() {
+  version="$(./rodent versions)"
+  test "$version" = " + $RODENT_GOLANG_VERSION"
+}
+
+it_cross_compiles() {
+  ./rodent install -p freebsd_amd64 "$RODENT_GOLANG_VERSION"
+}
+
+it_refuses_to_install_a_foo_release() {
+  ! ./rodent install foobar
+}

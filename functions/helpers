@@ -1,0 +1,101 @@
+
+. "$RODENT_HOME/env/settings"
+
+functions=(shell debug logging init usage)
+
+for function in "${functions[@]}"
+do
+  . "$RODENT_HOME/functions/$function"
+done
+
+# Helper built-in functions
+
+#TODO conside adding a timeout
+# --max-time
+__curl() {
+  local url="$*"
+  which curl >/dev/null 2>&1 || {
+    error "rodent requires 'curl'..."
+  }
+
+  curl -s -S --no-keepalive $url
+}
+
+__tar() {
+  local arg="$*"
+  which tar >/dev/null 2>&1 || {
+    error "rodent requires the 'tar' utility"
+  }
+
+  tar $arg
+}
+
+__download() {
+  code=$(__curl "$1" --write-out %{http_code} --output "$2") 
+  (( code == 200 )) || fatal "the download failed, please retry later..."
+}
+
+__untar() {
+  tar_file="$1"
+  target_dir="$2"
+
+  [[ -d "$target_dir" ]] || mkdir -p "$target_dir"
+
+  __tar -zxf "$tar_file" -C "$target_dir" --strip-components 1 || {
+    fatal "the extraction of the archive failed"
+  }
+}
+
+__cleanup() {
+  file="$1"
+  if [ -d "$file" ]
+  then
+    rm -Rf "$file"
+  else
+    unlink "$file"
+  fi
+}
+
+__str_in_list() {
+  local entry="$1"
+  local list="$2"
+
+  [[ "${list/$entry}" = "$list" ]] && return 1
+
+  return 0
+}
+
+__go_version() {
+  which go >/dev/null || {
+    return
+  }
+
+  local version="$(go version)"
+  echo "$version"
+}
+
+__detect_os() {
+  platform="$(uname -s)"
+  echo "${platform,,}"
+}
+
+__detect_arch() {
+  arch="386"
+  if [ "$(uname -m)" = "x86_64" ]
+  then
+    arch="amd64"
+  fi
+
+  echo $arch
+}
+
+__validate_confirmation() {
+  local msg="$*"
+  read -p "$msg [Y/n]" -n 1 -r
+  echo
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    return 0
+  fi
+  return 1
+}

@@ -1,0 +1,168 @@
+## Usage: rodent install [options] <version>
+##        -s  Set the version globally after install
+##        -p  Cross-compile for a specific platform
+##        
+##        -l  List all available versions
+
+fetch_upstream_versions() {
+  local os="$(__detect_os)"
+  local golang_dist="$os-$(__detect_arch)$(golang_release_xtra_tag "$os")"
+
+  __curl "$GOLANG_DOWNLOAD_WIKI" | awk -v dist="$golang_dist" '
+  BEGIN {
+    RS="</a>"
+    IGNORECASE=1
+  }
+  {
+    regex="https.*"dist".*tar.gz"
+    for(o=1;o<=NF;o++){
+      if ($o ~ regex){
+        gsub(/.*href=\042/,"",$o)
+        gsub(/\042.*/,"",$o)
+        gsub("."dist".tar.gz","",$o)
+        split($(o),r,"/")
+        #catch in case of duplicates?
+        re[r[5]]++
+      }
+    }
+  }
+  END {
+    for (e in re) {
+      print e
+    } 
+  }'
+}
+
+list_available_versions() {
+  local entries="$(fetch_upstream_versions)"
+  local release
+  display "Available versions:"
+  for release in $entries
+  do
+    display " ${release##*/}"
+  done
+}
+
+check_local_setup() {
+  local version="$1"
+  local platform="$2"
+  #local sys_version=($(__go_version))
+
+  if [ -d "$RODENT_GOROOT_TOP/$version/pkg/$platform" ]
+  #if [[ ${sys_version[2]} = "$version" || -d "$RODENT_GOROOT_TOP/$version/pkg/$platform" ]]
+  then
+    echo 1
+    return
+  fi
+
+  echo 0
+}
+
+golang_release_xtra_tag() {
+  local os="$1"
+
+  if [ "$os" = "darwin" ]
+  then
+    echo "-osx10.6"
+    if [ "$(uname -r)" \> "12" ]
+    then
+      echo "-osx10.8"
+    fi
+  fi
+}
+
+install_binary() {
+  local version="$1"
+  local platform="$2"
+  GOOS=${platform%_*}
+  GOARCH=${platform#*_}
+  export GOOS
+  export GOARCH
+
+  local cur_platform="$(__detect_os)_$(__detect_arch)"
+
+  local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag).tar.gz"
+
+  local tmpdir=$(mktemp -d)
+
+  if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
+  then
+    info "downloading golang source $version"
+    __download "$GOLANG_DOWNLOAD_SRC/$version.src.tar.gz" "$tmpdir/$version"
+    info "untarring binary to $RODENT_GOROOT_TOP"
+    __untar "$tmpdir/$version" "$RODENT_GOROOT_TOP/$version"
+  fi
+
+  pushd . > /dev/null 2>&1
+  cd "$RODENT_GOROOT_TOP/$version/src"
+
+  [[ "$platform" == "$cur_platform" ]] && ./make.bash
+
+  info "downloading binary distribution $release"
+  __download "$GOLANG_DOWNLOAD_SRC/$release" "$tmpdir/$release"
+  __untar "$tmpdir/$release" "$tmpdir/$version-$GOOS-$GOARCH"
+  cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/pkg/${GOOS}_$GOARCH/" "$RODENT_GOROOT_TOP/$version/pkg/"
+  cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/src/pkg/runtime/z"*"_${GOOS}_$GOARCH."* "$RODENT_GOROOT_TOP/$version/src/pkg/runtime/"
+
+  info "cleanup download"
+  __cleanup "$tmpdir"
+
+  popd > /dev/null 2>&1
+}
+
+while getopts ":hlsp:" opts
+do
+  case $opts in
+  h|\?)
+    usage "$1"
+    ;;
+  l)
+    list_available_versions
+    exit 0
+    ;;
+  p)
+    platform=$OPTARG
+    ;;
+  s)
+    set_globally=true
+    ;;
+  *)
+    usage "$1"
+  esac
+done
+
+shift $((OPTIND - 1))
+
+golang_version="$1"
+[[ ! "$golang_version" ]] && {
+  usage "install"
+}
+
+platform="$(__detect_os)_$(__detect_arch) $platform"
+
+supported_platforms="linux_amd64 linux_386 darwin_amd64 darwin_386 windows_amd64 windows_386 freebsd_amd64 freebsd_386"
+available_versions="$(fetch_upstream_versions)"
+
+__str_in_list "$golang_version" "$available_versions" || \
+  fatal "unknown version, run '-list' for a list of available versions"
+
+for re in $platform
+do
+  __str_in_list "$re" "$supported_platforms" || {
+    info "this platform $re is not supported, skipping..."
+    continue
+  }
+
+  if [ "$(check_local_setup "$golang_version" "$re")" == "1" ]
+  then
+    info "go version $golang_version for platform $re is already installed"
+    continue
+  fi
+
+  install_binary "$golang_version" "$re"
+done
+
+[[ ! "$set_globally" ]] || {
+  info "set version globally"
+  rodent set -g "$golang_version"
+}

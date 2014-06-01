@@ -1,0 +1,48 @@
+## Usage: rodent set [options] <version>
+##        -g  Set version globally
+##        -l  Directory/Workspace level version 
+
+set_golang_version() {
+  local version="$1"
+  local rodentrc="$2"
+
+  [[ -z "$rodentrc" ]] && {
+    display "setting version for current shell at $version"
+    export RODENT_GOLANG_VERSION="$version"
+    exec "$SHELL" -i
+  }
+
+  grep -q '^gover' "$rodentrc" 2> /dev/null &&\
+    sed -i "s/^\(gover=\).*/\1$version/" "$rodentrc" ||\
+    echo "gover=$version" >> "$rodentrc"
+    
+  display "setting version to $version"
+}
+
+while getopts ":hgl" opts
+do
+  case $opts in
+  h|\?)
+    usage "$1"
+    ;;
+  g)
+    rodentrc="$RODENT_HOME/.rodentrc"
+    ;;
+  l)
+    rodentrc="$PWD/.rodentrc"
+    ;;
+  *)
+    usage "$1"
+  esac
+done
+
+shift $((OPTIND - 1))
+
+golang_version="$1"
+
+[[ -z "$golang_version" ]] && usage "set"
+
+[[ -d "$RODENT_GOROOT_TOP/$golang_version" ]] || fatal "this version could not be found at $RODENT_GOROOT_TOP"
+
+#TODO check if already in use and simply inform?
+set_golang_version "$golang_version" "$rodentrc" || fatal "failed to set version"

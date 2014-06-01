@@ -1,0 +1,9 @@
+describe "versions"
+
+# part of this unit tests are covered in "install" and "uninstall" units
+# to avoid repeating the workflow in order to validate certain routines of "versions"
+
+# generic case
+it_executes_versions() {
+  ./rodent versions
+}

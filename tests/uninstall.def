@@ -1,0 +1,14 @@
+describe "uninstall/versions"
+
+it_refuses_to_uninstall_an_active_go_release() {
+  ! ./rodent uninstall "$RODENT_GOLANG_VERSION"
+}
+
+it_uninstalls_an_active_go_release() {
+  ./rodent uninstall -f "$RODENT_GOLANG_VERSION"
+}
+
+it_shows_no_installed_versions() {
+  msg="$(./rodent versions)"
+  test "$msg" = "No go versions have been installed. To install, execute \"rodent install go<ver>\""
+}  

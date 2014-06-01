@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+## Usage: rodent [command] [args]
+##        help        Display the help
+##        set         Set a version of Go
+##        install     Install a version of Go
+##        versions    Display installed/in-use version(s)
+##        uninstall   Uninstall a version of Go
+##
+##        system      Display system related information
+
+#TODO ensure user has gnu coreutils installed!
+[[ $BASH_SOURCE != $0 ]] && {
+  RODENT_HOME=$(dirname "$(readlink -f "$BASH_SOURCE")")
+  export RODENT_HOME
+  export PATH="$RODENT_HOME/_shims:$RODENT_HOME:$PATH"
+  return
+}
+
+RODENT_HOME=$(dirname "$(readlink -f "$0")")
+
+. "$RODENT_HOME/functions/helpers"
+
+cmd="${1:-help}"
+
+if [[ ! -f "$RODENT_LIB/$cmd" || $cmd == "help" ]]
+then
+  usage "$0"
+fi
+
+. "$RODENT_LIB/$cmd" "$@"

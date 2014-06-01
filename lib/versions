@@ -1,0 +1,20 @@
+
+versions=$(ls "$RODENT_GOROOT_TOP")
+sys_version=($(__go_version))
+
+[[ ! "$versions" ]] && {
+  display "No go versions have been installed. To install, execute \"rodent install go<ver>\""
+  exit 0
+}
+
+#FIXME beta builds of go use "devel" as version tag (i.e: go1.3beta1)
+# hence the routine below will not properly tag this type of releases
+for ver in $versions
+do
+  marker="- "
+  if [[ $ver == "${sys_version[2]}" ]]
+  then
+    marker="+ "
+  fi
+  display " $marker$ver"
+done

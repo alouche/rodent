@@ -1,0 +1,5 @@
+describe "system_information"
+
+it_shows_system_information() {
+  ./rodent system
+}

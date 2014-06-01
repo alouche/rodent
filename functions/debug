@@ -1,0 +1,7 @@
+
+[ -n "$RODENT_DEBUG" ] && {
+  export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] '
+  set -x
+}
+
+echo -n ""

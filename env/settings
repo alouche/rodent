@@ -1,0 +1,14 @@
+
+RODENT_DISPLAY_LABEL="rodent"
+export $RODENT_DISPLAY_LABEL
+
+[[ -z "$RODENT_GOROOT_TOP" ]] && {
+  RODENT_GOROOT_TOP="$RODENT_HOME/releases"
+  export RODENT_GOROOT_TOP
+}
+
+GOLANG_DOWNLOAD_SRC="https://storage.googleapis.com/golang"
+export GOLANG_DOWNLOAD_SRC
+
+GOLANG_DOWNLOAD_WIKI="https://code.google.com/p/go/wiki/Downloads"
+export GOLANG_DOWNLOAD_WIKI

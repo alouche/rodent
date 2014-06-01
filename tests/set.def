@@ -1,0 +1,13 @@
+describe "set"
+
+it_sets_global_go_version() {
+  ./rodent set -g "$RODENT_GOLANG_VERSION"
+}
+
+it_sets_local_go_version() {
+  ./rodent set -l "$RODENT_GOLANG_VERSION"
+}
+
+it_refuses_to_set_a_non_installed_go_version() {
+  ! ./rodent set foobar
+}

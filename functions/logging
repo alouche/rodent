@@ -1,0 +1,18 @@
+
+info() {
+  msg="$*"
+  printf "# %b\n" "${msg^}"
+}
+
+display() {
+  printf "%b\n" "$*"
+}
+
+error() {
+  printf "error: %b\n" "$*";
+}
+
+fatal() {
+  error "$1"
+  exit "${2:-1}"
+}

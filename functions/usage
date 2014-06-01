@@ -1,0 +1,10 @@
+
+usage() {
+  rodent_ref="$RODENT_HOME/lib/$1"
+  if [ "$0" == "$1" ]
+  then
+    rodent_ref="$RODENT_HOME/rodent"
+  fi
+  sed -n '/^##/,/^$/s/^## \{0,1\}//p' "$rodent_ref"
+  exit 1
+}

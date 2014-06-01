@@ -1,0 +1,6 @@
+
+cd "$RODENT_HOME"
+
+version="$(git describe --tags HEAD 2>/dev/null || true)"
+
+echo "$RODENT_DISPLAY_LABEL v${version#v}"

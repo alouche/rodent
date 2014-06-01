@@ -1,0 +1,15 @@
+
+[[ -z "$RODENT_HOME" || ! -d "$RODENT_HOME" ]] && {
+  fatal "\$RODENT_HOME is not setup..."
+}
+
+[ -d "$RODENT_GOROOT_TOP" ] || mkdir -p "$RODENT_GOROOT_TOP"
+[ -d "$RODENT_HOME/_shims" ] || mkdir -p "$RODENT_HOME/_shims"
+
+RODENT_LIB=$RODENT_HOME/lib
+export RODENT_LIB
+
+#if [[ ":${PATH}:" != *:"${RODENT_HOME}/shims":* ]]
+#then
+#  echo 'export PATH="'${RODENT_HOME}'/shims:${PATH}"'
+#fi

@@ -1,0 +1,11 @@
+
+set -e
+set -E
+exec 3<&2
+
+trap 'fatal "action canceled!"' INT
+
+# Inc getops index due to sourcing
+OPTIND=2
+
+export -n CDPATH
