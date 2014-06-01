@@ -60,15 +60,18 @@ check_local_setup() {
 
 golang_release_xtra_tag() {
   local os="$1"
+  local xtra
 
   if [ "$os" = "darwin" ]
   then
-    echo "-osx10.6"
+    xtra="-osx10.6"
     if [ "$(uname -r)" \> "12" ]
     then
-      echo "-osx10.8"
+      xtra="-osx10.8"
     fi
   fi
+
+  echo "$xtra"
 }
 
 install_binary() {
@@ -81,7 +84,7 @@ install_binary() {
 
   local cur_platform="$(__detect_os)_$(__detect_arch)"
 
-  local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag).tar.gz"
+  local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
 
   local tmpdir=$(mktemp -d)
 
