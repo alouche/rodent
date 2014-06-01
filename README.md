@@ -60,8 +60,27 @@ Add in your .bashrc, profile etc.
 
 Restart your existing shell or open an new one and you are set. Type "rodent", press <Enter>
 
-Refer to the Quick Start guide.
+## Usage
 
+### List upstream Golang release
+
+> rodent install -l
+> Available versions:
+>  go1.3beta1
+>  go1.3beta2
+>  go1.2.2
+
+### Install a Golang release
+
+> rodent install go1.2.2
+
+### Set a Golang release globally
+
+> rodent set -g go1.2.2
+
+### Enable cross-compilation for freebsd_amd64
+
+> rodent install -p freebsd_amd64 go1.2.2
 
 ## Disclaimer
 
