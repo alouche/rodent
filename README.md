@@ -14,7 +14,7 @@ This is achieved without getting in your way or hijacking your shell executables
 ## Highlight Features
 
 * Define a specific go version per project source/directory
-  > echo "gover=go1.2.2 >> .rodentrc
+  > echo "gover=go1.2.2" >> .rodentrc
 
   run "go build"
 
@@ -22,7 +22,7 @@ This is achieved without getting in your way or hijacking your shell executables
   > echo "gover_ATAG=go1.3beta2" >> .rodentrc
   
   run
-  > "export RODENT_ENV=ATAG; go build"
+  > export RODENT_ENV=ATAG; go build
   
   Any rodent variables when suffixed with "\_<LABEL>" are scopped as variables for the defined enviroment scope <LABEL>
   
@@ -32,15 +32,15 @@ This is achieved without getting in your way or hijacking your shell executables
   > echo "godeps=/my/project/workspace" >> .rodentrc
 
   A dependency target per environment? easy...
-  > echo "godeps_production=./local/prd/path"
+  > echo "godeps_production=./local/prd/path" >> .rodentrc
   
-  > echo "godeps_development=./local/dev/path"
+  > echo "godeps_development=./local/dev/path" >> .rodentrc
   
   run
-  > "export RODENT_ENV=production; go get"
+  > export RODENT_ENV=production; go get
   
   or
-  > "export RODENT_ENV=experimental; go build"
+  > export RODENT_ENV=experimental; go build
 
 You get the idea... so feel free to refer to the [rodentrc guide](https://github.com/alouche/rodent/wiki/rodentrc-file).
 
