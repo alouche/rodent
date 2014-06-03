@@ -61,9 +61,9 @@ Restart your existing shell or open an new one and you are set. Type "rodent".
 > rodent install -l
 
 > Available versions:
->  go1.3beta1
->  go1.3beta2
->  go1.2.2
+go1.3beta1
+go1.3beta2
+go1.2.2
 
 ### Install a Golang release
 
@@ -89,6 +89,9 @@ For more info, refer to [cross-compilation environment](https://github.com/alouc
 ### Disclaimer
 
 This project is relatively new and not perfect. It still requires a lot of work and does not pretend to be better than the numerous awesome tools the Golang community has created. It is just one way of tackling "Go version and dependency management", if you like it, use it and feel free to contribute.
+
+## Contributing
+rodent is not locked to a specific way of doing things, so if you have or found a better way to do things or tackle some of the challenges listed here, then I would love to hear of it, so "Go" forth - fork, patch, submit and inspire. The only dependency is that rodent should remain non-intrusive to the user's workflow and relatively light.
 
 ## License
 
