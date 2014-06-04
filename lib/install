@@ -4,52 +4,20 @@
 ##        
 ##        -l  List all available versions
 
-fetch_upstream_versions() {
-  local os="$(__detect_os)"
-  local golang_dist="$os-$(__detect_arch)$(golang_release_xtra_tag "$os")"
-
-  __curl "$GOLANG_DOWNLOAD_WIKI" | awk -v dist="$golang_dist" '
-  BEGIN {
-    RS="</a>"
-    IGNORECASE=1
-  }
-  {
-    regex="https.*"dist".*tar.gz"
-    for(o=1;o<=NF;o++){
-      if ($o ~ regex){
-        gsub(/.*href=\042/,"",$o)
-        gsub(/\042.*/,"",$o)
-        gsub("."dist".tar.gz","",$o)
-        split($(o),r,"/")
-        #catch in case of duplicates?
-        re[r[5]]++
-      }
-    }
-  }
-  END {
-    for (e in re) {
-      print e
-    } 
-  }'
-}
-
 list_available_versions() {
-  local entries="$(fetch_upstream_versions)"
-  local release
   display "Available versions:"
-  for release in $entries
+
+  for release in ${!RODENT_GO_RELEASES[@]}
   do
-    display " ${release##*/}"
+    display " ${release}"
   done
 }
 
 check_local_setup() {
   local version="$1"
   local platform="$2"
-  #local sys_version=($(__go_version))
 
   if [ -d "$RODENT_GOROOT_TOP/$version/pkg/$platform" ]
-  #if [[ ${sys_version[2]} = "$version" || -d "$RODENT_GOROOT_TOP/$version/pkg/$platform" ]]
   then
     echo 1
     return
@@ -88,10 +56,12 @@ install_binary() {
 
   local tmpdir=$(mktemp -d)
 
+  local dl_link="${RODENT_GO_RELEASES[$version]}"
+
   if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
   then
     info "downloading golang source $version"
-    __download "$GOLANG_DOWNLOAD_SRC/$version.src.tar.gz" "$tmpdir/$version"
+    __download "$dl_link/$version.src.tar.gz" "$tmpdir/$version"
     info "untarring binary to $RODENT_GOROOT_TOP"
     __untar "$tmpdir/$version" "$RODENT_GOROOT_TOP/$version"
   fi
@@ -99,20 +69,33 @@ install_binary() {
   pushd . > /dev/null 2>&1
   cd "$RODENT_GOROOT_TOP/$version/src"
 
-  [[ "$platform" == "$cur_platform" ]] && ./make.bash
+  [[ "$platform" == "$cur_platform" ]] && {
+    ./make.bash || {
+      __cleanup "$RODENT_GOROOT_TOP/$version"
+      fatal "compilation failed - installation aborted"
+    }
+  }
 
   info "downloading binary distribution $release"
-  __download "$GOLANG_DOWNLOAD_SRC/$release" "$tmpdir/$release"
+  __download "$dl_link/$release" "$tmpdir/$release"
   __untar "$tmpdir/$release" "$tmpdir/$version-$GOOS-$GOARCH"
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/pkg/${GOOS}_$GOARCH/" "$RODENT_GOROOT_TOP/$version/pkg/"
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/src/pkg/runtime/z"*"_${GOOS}_$GOARCH."* "$RODENT_GOROOT_TOP/$version/src/pkg/runtime/"
 
-  "$RODENT_GOROOT_TOP/$version/bin/go" tool dist bootstrap -v
+  "$RODENT_GOROOT_TOP/$version/bin/go" tool dist bootstrap -v || {
+    #No cleanup since this is mostly for cross-compilation, so just warn...
+    error "bootstrapping failed"
+  }
 
   info "cleanup download"
   __cleanup "$tmpdir"
 
   popd > /dev/null 2>&1
+}
+
+. "$RODENT_HOME/share/releases" || {
+  error "could not locate $RODENT_HOME/share/releases"
+  fatal "try running 'git pull' inside $RODENT_HOME"
 }
 
 while getopts ":hlsp:" opts
@@ -146,9 +129,8 @@ golang_version="$1"
 platform="$(__detect_os)_$(__detect_arch) $platform"
 
 supported_platforms="linux_amd64 linux_386 darwin_amd64 darwin_386 windows_amd64 windows_386 freebsd_amd64 freebsd_386"
-available_versions="$(fetch_upstream_versions)"
 
-__str_in_list "$golang_version" "$available_versions" || \
+[[ -z "${RODENT_GO_RELEASES[$golang_version]}" ]] && \
   fatal "unknown version, run '-list' for a list of available versions"
 
 for re in $platform

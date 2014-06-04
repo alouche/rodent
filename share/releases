@@ -1,0 +1,16 @@
+declare -A RODENT_GO_RELEASES
+
+RODENT_GO_RELEASES["go1.3rc1"]="http://golang.org/dl"
+RODENT_GO_RELEASES["go1.2.2"]="http://golang.org/dl"
+RODENT_GO_RELEASES["go1.3beta2"]="https://storage.googleapis.com/golang"
+RODENT_GO_RELEASES["go1.3beta1"]="https://storage.googleapis.com/golang"
+RODENT_GO_RELEASES["go1.1.1"]="https://go.googlecode.com/files"
+RODENT_GO_RELEASES["go1.1.2"]="https://go.googlecode.com/files"
+RODENT_GO_RELEASES["go1.1"]="https://go.googlecode.com/files"
+RODENT_GO_RELEASES["go1.1beta1"]="https://go.googlecode.com/files"
+RODENT_GO_RELEASES["go1.0.3"]="https://go.googlecode.com/files"
+RODENT_GO_RELEASES["go1.0.2"]="https://go.googlecode.com/files"
+RODENT_GO_RELEASES["go1.0.1"]="https://go.googlecode.com/files"
+RODENT_GO_RELEASES["go.go1"]="https://go.googlecode.com/files"
+
+export RODENT_GO_RELEASES
