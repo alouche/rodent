@@ -1,5 +1,7 @@
 declare -A RODENT_GO_RELEASES
 
+# use reference dl link and follow redirect
+# in case underlying storage hosting changes
 RODENT_GO_RELEASES["go1.3rc1"]="http://golang.org/dl"
 RODENT_GO_RELEASES["go1.2.2"]="http://golang.org/dl"
 RODENT_GO_RELEASES["go1.3beta2"]="https://storage.googleapis.com/golang"

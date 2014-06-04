@@ -18,7 +18,7 @@ __curl() {
     error "rodent requires 'curl'..."
   }
 
-  curl -s -S --no-keepalive $url
+  curl -L -s -S --no-keepalive $url
 }
 
 __tar() {
