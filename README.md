@@ -44,7 +44,7 @@ This is achieved without getting in your way or hijacking your shell executables
 
 You get the idea... so feel free to refer to the [rodentrc guide](https://github.com/alouche/rodent/wiki/rodentrc-file).
 
-## Setup
+## Install
 
 > git clone http://github.com/alouhe/rodent.git /my/path/to/rodent
 
@@ -56,20 +56,21 @@ Restart your existing shell or open an new one and you are set. Type "rodent".
 
 ## Usage
 
-### List upstream Golang release
+> rodent -h
+
+### Update rodent
+
+> rodent system -u
+
+### List Go releases
 
 > rodent install -l
 
-> Available versions:
-go1.3beta1
-go1.3beta2
-go1.2.2
-
-### Install a Golang release
+### Install a Go release
 
 > rodent install go1.2.2
 
-### Set a Golang release globally
+### Set a version of Go globally
 
 > rodent set -g go1.2.2
 
