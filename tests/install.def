@@ -10,7 +10,7 @@ it_installs_a_go_release_and_set_globally() {
 
 it_list_installed_versions() {
   version="$(./rodent versions)"
-  test "$version" = " + $RODENT_GOLANG_VERSION"
+  test "$version" = "i $RODENT_GOLANG_VERSION"
 }
 
 it_cross_compiles() {
