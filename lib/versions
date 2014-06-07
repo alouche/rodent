@@ -11,10 +11,10 @@ sys_version=($(__go_version))
 # hence the routine below will not properly tag this type of releases
 for ver in $versions
 do
-  marker="- "
+  marker=" "
   if [[ $ver == "${sys_version[2]}" ]]
   then
-    marker="+ "
+    marker="i"
   fi
-  display " $marker$ver"
+  display "$marker $ver"
 done

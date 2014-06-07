@@ -7,7 +7,7 @@
 list_available_versions() {
   display "Available versions:"
 
-  for release in ${!RODENT_GO_RELEASES[@]}
+  for release in "${!RODENT_GO_RELEASES[@]}"
   do
     display " ${release}"
   done
