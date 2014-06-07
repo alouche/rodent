@@ -6,7 +6,7 @@
 ##        versions    Display installed/in-use version(s)
 ##        uninstall   Uninstall a version of Go
 ##
-##        system      Display system related information
+##        system      Maintenance routines
 
 #TODO ensure user has gnu coreutils installed!
 [[ $BASH_SOURCE != $0 ]] && {

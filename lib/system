@@ -1,6 +1,24 @@
+## Usage: rodent system [options]
+##        -u  Update rodent
 
-cd "$RODENT_HOME"
+export GIT_WORK_TREE="$RODENT_HOME"
+export GIT_DIR="${RODENT_HOME}/.git"
+
+update_rodent() {
+  git pull || fatal "failed to update rodent"
+}
+
+while getopts ":hu" opts
+do
+  case $opts in
+  h)
+    usage "$1"
+    ;;
+  u)
+    update_rodent
+    ;;
+  esac
+done
 
 version="$(git describe --tags HEAD 2>/dev/null || true)"
-
 echo "$RODENT_DISPLAY_LABEL v${version#v}"
