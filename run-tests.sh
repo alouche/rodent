@@ -10,4 +10,6 @@ export RODENT_GOROOT_TOP
 RODENT_GOLANG_VERSION="go1.3beta2"
 export RODENT_GOLANG_VERSION
 
+export RODENT_DISABLE_RC_SECURITY=true
+
 bash ./tests/bin/roundup tests/*.def
