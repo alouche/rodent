@@ -23,15 +23,41 @@ localdir="$PWD"
   popd
 }
 
-for rodentrc in $RODENT_HOME/.rodentrc $localdir/.rodentrc
-do
-  [[ -f "$rodentrc" ]] && {
-    . "$rodentrc" || {
-      echo "an error occured, could not source $rodentrc"
+. "$RODENT_HOME/.rodentrc"
+
+[[ -f "$localdir/.rodentrc" ]] && {
+  allow_local_rc=true
+
+  if ! grep -Fxqs "$localdir" "$RODENT_HOME/local/trusted-paths"
+  then
+    echo "!!! Untrusted rodentrc found at $localdir !!!"
+    read -p "Trust location and load? " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      [[ -d "$RODENT_HOME/local" ]] || {
+        mkdir "$RODENT_HOME/local" || {
+          echo "failed to create $RODENT_HOME/local"
+          exit 1
+        }
+      }
+
+      echo "$localdir" >> "$RODENT_HOME/local/trusted-paths" || {
+        echo "could not add localdir to trusted listing"
+      }
+    else
+      allow_local_rc=false
+    fi
+  fi
+
+  if $allow_local_rc
+  then
+    . "$localdir/.rodentrc" || {
+      echo "an error occured, could not source $localdir/.rodentrc"
       exit 1
     }
-  }
-done
+  fi
+}
 
 [[ -z "$RODENT_ENV" ]] || {
   rodent_env="_$RODENT_ENV"
@@ -52,7 +78,7 @@ gover="${RODENT_GOLANG_VERSION:-${!gover_set}}"
 
 goroot="$RODENT_GOROOT_TOP/$gover"
 [[ -x "$goroot/bin/$prog" ]] || {
-  echo "the version you wish to use does not exists or is broken"
+  echo "the version of go \"$gover\" you wish to use does not exists or is broken"
   echo "you can verify your installation by executing \"rodent versions\""
   exit 1
 }
