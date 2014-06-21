@@ -3,13 +3,23 @@
 
 rodent is a shell (bash) application which:
 
-* Manages multiple releases of Go.
-* Allows you to test/build your projects against multiple Go releases.
+* Manages multiple versions of Go.
+* Allows you to test/build your projects against multiple Go releases at ease.
 * Allows cross-compile builds for different platform targets (cgo/stdlib [workaround](https://groups.google.com/d/msg/golang-nuts/2XoGUvBalcw/ErSWiTlO17kJ)).
 * Manages/tracks librairies dependencies by expanding the GOPATH
 * Create separate workflows within a project per environment (i.e: build projectA with ENV="PRD" on go1.2.2 and ENV="DEV" on go1.3beta2)
 
 This is achieved without getting in your way or hijacking your shell executables/builtins by making use of [shims](http://en.wikipedia.org/wiki/Shim_%28computing%29).
+
+## Install
+
+> git clone http://github.com/alouhe/rodent.git /my/path/to/rodent
+
+Add in your .bashrc, profile etc.
+
+> [[ -s "/my/path/to/rodent" ]] && source "/my/path/to/rodent"
+
+Restart your existing shell or open an new one and you are set. Type "rodent".
 
 ## Highlight Features
 
@@ -43,16 +53,6 @@ This is achieved without getting in your way or hijacking your shell executables
   > export RODENT_ENV=experimental; go build
 
 You get the idea... so feel free to refer to the [rodentrc guide](https://github.com/alouche/rodent/wiki/rodentrc-file).
-
-## Install
-
-> git clone http://github.com/alouhe/rodent.git /my/path/to/rodent
-
-Add in your .bashrc, profile etc.
-
-> [[ -s "/my/path/to/rodent" ]] && source "/my/path/to/rodent"
-
-Restart your existing shell or open an new one and you are set. Type "rodent".
 
 ## Usage
 
