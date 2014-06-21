@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Rodent by alouche</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Rodent</h1>
+        <h2>Manage Go Versions/Projects/Dependencies</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/alouche/rodent/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/alouche/rodent/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/alouche/rodent" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="rodent" class="anchor" href="#rodent"><span class="octicon octicon-link"></span></a>rodent</h1>
+
+<p><a href="https://drone.io/github.com/alouche/rodent/latest"><img src="https://drone.io/github.com/alouche/rodent/status.png" alt="Build Status"></a></p>
+
+<p>rodent is a shell (bash) application which:</p>
+
+<ul>
+<li>Manages multiple versions of Go.</li>
+<li>Allows you to test/build your projects against multiple Go releases at ease.</li>
+<li>Allows cross-compile builds for different platform targets (cgo/stdlib <a href="https://groups.google.com/d/msg/golang-nuts/2XoGUvBalcw/ErSWiTlO17kJ">workaround</a>).</li>
+<li>Manages/tracks librairies dependencies by expanding the GOPATH</li>
+<li>Create separate workflows within a project per environment (i.e: build projectA with ENV="PRD" on go1.2.2 and ENV="DEV" on go1.3beta2)</li>
+</ul><p>This is achieved without getting in your way or hijacking your shell executables/builtins by making use of <a href="http://en.wikipedia.org/wiki/Shim_%28computing%29">shims</a>.</p>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<blockquote>
+<p>git clone <a href="http://github.com/alouhe/rodent.git">http://github.com/alouhe/rodent.git</a> /my/path/to/rodent</p>
+</blockquote>
+
+<p>Add in your .bashrc, profile etc.</p>
+
+<blockquote>
+<p>[[ -s "/my/path/to/rodent" ]] &amp;&amp; source "/my/path/to/rodent"</p>
+</blockquote>
+
+<p>Restart your existing shell or open an new one and you are set. Type "rodent".</p>
+
+<h2>
+<a name="highlight-features" class="anchor" href="#highlight-features"><span class="octicon octicon-link"></span></a>Highlight Features</h2>
+
+<ul>
+<li>
+<p>Define a specific go version per project source/directory</p>
+
+<blockquote>
+<p>echo "gover=go1.2.2" &gt;&gt; .rodentrc</p>
+</blockquote>
+
+<p>run "go build"</p>
+
+<p>Want to switch between multiple go versions in the same project (for testing new builds)</p>
+
+<blockquote>
+<p>echo "gover_ATAG=go1.3beta2" &gt;&gt; .rodentrc</p>
+</blockquote>
+
+<p>run</p>
+
+<blockquote>
+<p>export RODENT_ENV=ATAG; go build</p>
+</blockquote>
+
+<p>Any rodent variables when suffixed with "_" are scopped as variables for the defined enviroment scope </p>
+
+<p>variables without these  suffixes are used as default variables</p>
+</li>
+<li>
+<p>Keep track of your project third party libraries</p>
+
+<blockquote>
+<p>echo "godeps=/my/project/workspace" &gt;&gt; .rodentrc</p>
+</blockquote>
+
+<p>A dependency target per environment? easy...</p>
+
+<blockquote>
+<p>echo "godeps_production=./local/prd/path" &gt;&gt; .rodentrc</p>
+
+<p>echo "godeps_development=./local/dev/path" &gt;&gt; .rodentrc</p>
+</blockquote>
+
+<p>run</p>
+
+<blockquote>
+<p>export RODENT_ENV=production; go get</p>
+</blockquote>
+
+<p>or</p>
+
+<blockquote>
+<p>export RODENT_ENV=experimental; go build</p>
+</blockquote>
+</li>
+</ul><p>You get the idea... so feel free to refer to the <a href="https://github.com/alouche/rodent/wiki/rodentrc-file">rodentrc guide</a>.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<blockquote>
+<p>rodent -h</p>
+</blockquote>
+
+<h3>
+<a name="update-rodent" class="anchor" href="#update-rodent"><span class="octicon octicon-link"></span></a>Update rodent</h3>
+
+<blockquote>
+<p>rodent system -u</p>
+</blockquote>
+
+<h3>
+<a name="list-go-releases" class="anchor" href="#list-go-releases"><span class="octicon octicon-link"></span></a>List Go releases</h3>
+
+<blockquote>
+<p>rodent install -l</p>
+</blockquote>
+
+<h3>
+<a name="install-a-go-release" class="anchor" href="#install-a-go-release"><span class="octicon octicon-link"></span></a>Install a Go release</h3>
+
+<blockquote>
+<p>rodent install go1.2.2</p>
+</blockquote>
+
+<h3>
+<a name="set-a-version-of-go-globally" class="anchor" href="#set-a-version-of-go-globally"><span class="octicon octicon-link"></span></a>Set a version of Go globally</h3>
+
+<blockquote>
+<p>rodent set -g go1.2.2</p>
+</blockquote>
+
+<h3>
+<a name="enable-cross-compilation-for-freebsd_amd64" class="anchor" href="#enable-cross-compilation-for-freebsd_amd64"><span class="octicon octicon-link"></span></a>Enable cross-compilation for freebsd_amd64</h3>
+
+<blockquote>
+<p>rodent install -p freebsd_amd64 go1.2.2</p>
+</blockquote>
+
+<p>For more info, refer to <a href="https://github.com/alouche/rodent/wiki/cross-compilation-setup">cross-compilation environment</a></p>
+
+<h2>
+<a name="why-this-project" class="anchor" href="#why-this-project"><span class="octicon octicon-link"></span></a>Why this project?</h2>
+
+<ul>
+<li>I wanted something light/small which allowed all the above while being transparent and out of the way.</li>
+<li>Managing and tracking my third party libraries by maintaining a separate directory per project which I could simply "tar; cp and or even git submodule.." </li>
+<li>I prefer using a custom GOPATH per project (or sometimes have a unique GOPATH for a subset of projects) and wanted to keep the "standard go workflow way of things" while maintaining that flexiblity/option.</li>
+<li>This is an experiment.</li>
+</ul><h3>
+<a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h3>
+
+<p>This project is relatively new and not perfect. It still requires a lot of work and does not pretend to be better than the numerous awesome tools the Golang community has created. It is just one way of tackling "Go version and dependency management", if you like it, use it and feel free to contribute.</p>
+
+<h2>
+<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>rodent is not locked to a specific way of doing things, so if you have or found a better way to do things or tackle some of the challenges listed here, then I would love to hear of it, so "Go" forth - fork, patch, submit and inspire. The only dependency is that rodent should remain non-intrusive to the user's workflow and relatively light.</p>
+
+<h2>
+<a name="other-tools-in-the-same-category" class="anchor" href="#other-tools-in-the-same-category"><span class="octicon octicon-link"></span></a>Other tools in the same category</h2>
+
+<ul>
+<li><a href="https://github.com/moovweb/gvm">GVM</a></li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>(The MIT License)</p>
+
+<p>Copyright (c) 2014 Ali Abbas</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
