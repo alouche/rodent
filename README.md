@@ -11,6 +11,8 @@ rodent is a shell (bash) application which:
 
 This is achieved without getting in your way or hijacking your shell executables/builtins by making use of [shims](http://en.wikipedia.org/wiki/Shim_%28computing%29).
 
+[Screencast](https://asciinema.org/a/10504)
+
 ## Install
 
 > git clone http://github.com/alouhe/rodent.git /my/path/to/rodent
