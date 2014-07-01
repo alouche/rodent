@@ -10,7 +10,7 @@
 
 #TODO ensure user has gnu coreutils installed!
 [[ $BASH_SOURCE != $0 ]] && {
-  RODENT_HOME=$(dirname "$(readlink -f "$BASH_SOURCE")")
+  RODENT_HOME=$(dirname "$(readlink -f "${BASH_SOURCE:-$0}")")
   export RODENT_HOME
   export PATH="$RODENT_HOME/_shims:$RODENT_HOME:$PATH"
   return
