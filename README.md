@@ -15,7 +15,7 @@ This is achieved without getting in your way or hijacking your shell executables
 
 ## Install
 
-> git clone http://github.com/alouhe/rodent.git /my/path/to/rodent
+> git clone http://github.com/alouche/rodent.git /my/path/to/rodent
 
 Add in your .bashrc, profile etc.
 
