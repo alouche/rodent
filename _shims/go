@@ -86,12 +86,12 @@ goroot="$RODENT_GOROOT_TOP/$gover"
 }
 export GOROOT="$goroot"
 
-[[ -z ${!godeps_set} ]] || {
-  GOPATH=${!godeps_set}:$GOPATH
-}
-
 [[ -z ${!gopath_set} ]] || {
   GOPATH=${!gopath_set}:$GOPATH
+}
+
+[[ -z ${!godeps_set} ]] || {
+  GOPATH=${!godeps_set}:$GOPATH
 }
 
 export GOPATH
