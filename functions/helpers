@@ -65,6 +65,19 @@ __str_in_list() {
   return 0
 }
 
+__str_in_array() {
+  local param=$#
+  local entry=${!param}
+
+  for ((i=1;i < $#;i++))
+  do
+    if [ "${!i}" == "${entry}" ]
+    then
+      echo $i
+    fi
+  done
+}
+
 __go_version() {
   which go >/dev/null || {
     return

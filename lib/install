@@ -4,12 +4,14 @@
 ##        
 ##        -l  List all available versions
 
+RODENT_GO_RELEASE_INDEX=0
+
 list_available_versions() {
   display "Available versions:"
 
-  for release in "${!RODENT_GO_RELEASES[@]}"
+  for release in "${RODENT_GO_RELEASES[@]}"
   do
-    display " ${release}"
+    display " go${release}"
   done
 }
 
@@ -45,6 +47,7 @@ golang_release_xtra_tag() {
 install_binary() {
   local version="$1"
   local platform="$2"
+
   GOOS=${platform%_*}
   GOARCH=${platform#*_}
   export GOOS
@@ -55,13 +58,19 @@ install_binary() {
   local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
 
   local tmpdir=$(mktemp -d)
-
-  local dl_link="${RODENT_GO_RELEASES[$version]}"
+  local dl_link="$RODENT_GO_RELEASES_DL"
 
   if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
   then
     info "downloading golang source $version"
+
+    if [[ "$RODENT_GO_RELEASE_INDEX" -gt 5 ]]
+    then
+      dl_link="$RODENT_GO_RELEASES_DL_LEGACY"
+    fi
+
     __download "$dl_link/$version.src.tar.gz" "$tmpdir/$version"
+
     info "untarring binary to $RODENT_GOROOT_TOP"
     __untar "$tmpdir/$version" "$RODENT_GOROOT_TOP/$version"
   fi
@@ -77,7 +86,7 @@ install_binary() {
   }
 
   info "downloading binary distribution $release"
-  __download "$dl_link/$release" "$tmpdir/$release"
+  __download "$dl_link/$release" "$tmpdir/$release" 
   __untar "$tmpdir/$release" "$tmpdir/$version-$GOOS-$GOARCH"
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/pkg/${GOOS}_$GOARCH/" "$RODENT_GOROOT_TOP/$version/pkg/"
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/src/pkg/runtime/z"*"_${GOOS}_$GOARCH."* "$RODENT_GOROOT_TOP/$version/src/pkg/runtime/"
@@ -130,7 +139,8 @@ platform="$(__detect_os)_$(__detect_arch) $platform"
 
 supported_platforms="darwin_386 darwin_amd64 dragonfly_386 dragonfly_amd64 freebsd_386 freebsd_amd64 freebsd_arm linux_386 linux_amd64 linux_arm netbsd_386 netbsd_amd64 netbsd_arm openbsd_386 openbsd_amd64 plan9_386 plan9_amd64 solaris_amd64 windows_386 windows_amd64"
 
-[[ -z "${RODENT_GO_RELEASES[$golang_version]}" ]] && \
+RODENT_GO_RELEASE_INDEX=$(__str_in_array "${RODENT_GO_RELEASES[@]}" "${golang_version:2}")
+[[ -z $RODENT_GO_RELEASE_INDEX ]] && \
   fatal "unknown version, run '-list' for a list of available versions"
 
 for re in $platform

@@ -7,7 +7,7 @@ export RODENT_GOROOT_TOP
 
 #versions=($(./rodent install -l |grep "go"))
 #RODENT_GOLANG_VERSION=${versions[$RANDOM % ${#RANDOM[*]}]}
-RODENT_GOLANG_VERSION="go1.3beta2"
+RODENT_GOLANG_VERSION="go1.3.1"
 export RODENT_GOLANG_VERSION
 
 export RODENT_DISABLE_RC_SECURITY=true
