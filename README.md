@@ -14,73 +14,77 @@ This is achieved without getting in your way or hijacking your shell executables
 [Screencast](https://asciinema.org/a/10504)
 
 ## Install
+```bash
+git clone http://github.com/alouche/rodent.git /my/path/to/rodent
 
-> git clone http://github.com/alouche/rodent.git /my/path/to/rodent
+# Add in your .bashrc, profile etc.
 
-Add in your .bashrc, profile etc.
+[[ -s "/my/path/to/rodent" ]] && source "/my/path/to/rodent"
 
-> [[ -s "/my/path/to/rodent" ]] && source "/my/path/to/rodent"
-
-Restart your existing shell or open an new one and you are set. Type "rodent".
+# Restart your existing shell or open an new one and you are set. Type "rodent".
+```
 
 ## Highlight Features
 
 * Define a specific go version per project source/directory
-  > echo "gover=go1.2.2" >> .rodentrc
+```bash
+echo "gover=go1.2.2" >> .rodentrc
 
-  run "go build"
+# Build your project
+go build
 
-  Want to switch between multiple go versions in the same project (for testing new builds)
-  > echo "gover_ATAG=go1.3beta2" >> .rodentrc
-  
-  run
-  > export RODENT_ENV=ATAG; go build
-  
-  Any rodent variables when suffixed with "\_<LABEL>" are scopped as variables for the defined enviroment scope <LABEL>
-  
-  variables without these <LABEL> suffixes are used as default variables
+# Want to switch between multiple go versions in the same project (for testing new builds)
+echo "gover_ATAG=go1.3beta2" >> .rodentrc
+
+# Export your tag as variable
+export RODENT_ENV=ATAG
+
+# Build your project
+go build
+``` 
+Any rodent variables when suffixed with "\_<LABEL>" are scopped as variables for the defined enviroment scope <LABEL>; variables without these <LABEL> suffixes are used as default variables
 
 * Keep track of your project third party libraries
-  > echo "godeps=/my/project/workspace" >> .rodentrc
+```bash
+echo "godeps=/my/project/workspace" >> .rodentrc
 
-  A dependency target per environment? easy...
-  > echo "godeps_production=./local/prd/path" >> .rodentrc
+# A dependency target per environment? easy...
+echo "godeps_production=./local/prd/path" >> .rodentrc
+  echo "godeps_development=./local/dev/path" >> .rodentrc
   
-  > echo "godeps_development=./local/dev/path" >> .rodentrc
-  
-  run
-  > export RODENT_ENV=production; go get
-  
-  or
-  > export RODENT_ENV=experimental; go build
+# Fetch your dependencies
+export RODENT_ENV=production
+go get
+
+# Alternatively
+export RODENT_ENV=experimental
+go build
+```
 
 You get the idea... so feel free to refer to the [rodentrc guide](https://github.com/alouche/rodent/wiki/rodentrc-file).
 
 ## Usage
+```bash
+rodent -h
 
-> rodent -h
+# Update rodent
+rodent system -u
 
-### Update rodent
+# List Go releases
+rodent install -l
 
-> rodent system -u
+# Install a Go release
+rodent install go1.2.2
 
-### List Go releases
+# Set a version of Go globally
+rodent set -g go1.2.2
 
-> rodent install -l
+# Enable cross-compilation for freebsd_amd64
+rodent install -p freebsd_amd64 go1.2.2
+```
 
-### Install a Go release
-
-> rodent install go1.2.2
-
-### Set a version of Go globally
-
-> rodent set -g go1.2.2
-
-### Enable cross-compilation for freebsd_amd64
-
-> rodent install -p freebsd_amd64 go1.2.2
-
-For more info, refer to [cross-compilation environment](https://github.com/alouche/rodent/wiki/cross-compilation-setup)
+## Cross-compilation
+Please refer to [cross-compilation environment](https://github.com/alouche/rodent/wiki/cross-compilation-setup)
 
 ## Why this project?
 
