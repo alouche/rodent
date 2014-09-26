@@ -50,7 +50,7 @@ echo "godeps=/my/project/workspace" >> .rodentrc
 
 # A dependency target per environment? easy...
 echo "godeps_production=./local/prd/path" >> .rodentrc
-  echo "godeps_development=./local/dev/path" >> .rodentrc
+echo "godeps_development=./local/dev/path" >> .rodentrc
   
 # Fetch your dependencies
 export RODENT_ENV=production
