@@ -24,6 +24,8 @@ git clone http://github.com/alouche/rodent.git /my/path/to/rodent
 # Restart your existing shell or open an new one and you are set. Type "rodent".
 ```
 
+For more information, checkout the [Wiki](https://github.com/alouche/rodent/wiki)
+
 ## Highlight Features
 
 * Define a specific go version per project source/directory
