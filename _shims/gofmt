@@ -2,7 +2,13 @@
 
 set -e
 
-RODENT_ABS_PATH=$(dirname "$(readlink -f "$0")")
+# OSX lacks "readlink -f"
+__abs_path_name() {
+  DIR=$(echo "${1%/*}")
+  (cd "$DIR" && echo "$(pwd -P)")
+}
+
+RODENT_ABS_PATH=$(__abs_path_name "$0")
 
 . "$RODENT_ABS_PATH/../env/settings"
 
