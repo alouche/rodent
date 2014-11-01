@@ -8,15 +8,20 @@
 ##
 ##        system      Maintenance routines
 
-#TODO ensure user has gnu coreutils installed!
+# OSX lacks "readlink -f"
+__abs_path_name() {
+  DIR=$(echo "${1%/*}")
+  (cd "$DIR" && echo "$(pwd -P)")
+}  
+
 [[ $BASH_SOURCE != $0 ]] && {
-  RODENT_HOME=$(dirname "$(readlink -f "${BASH_SOURCE:-$0}")")
+  RODENT_HOME=$(__abs_path_name "${BASH_SOURCE:-$0}")
   export RODENT_HOME
   export PATH="$RODENT_HOME/_shims:$RODENT_HOME:$PATH"
   return
 }
 
-RODENT_HOME=$(dirname "$(readlink -f "$0")")
+RODENT_HOME=$(__abs_path_name "$0")
 
 . "$RODENT_HOME/functions/helpers"
 
