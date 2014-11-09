@@ -18,7 +18,7 @@ __curl() {
     error "rodent requires 'curl'..."
   }
 
-  curl -L -s -S --no-keepalive $url
+  curl -L -s -S $url
 }
 
 __tar() {
@@ -78,6 +78,36 @@ __str_in_array() {
   done
 }
 
+__str_to_x_case() {
+  if [ ${BASH_VERSINFO[0]} -lt 4 ]
+  then
+    local str ul ll tmp
+    str="$1";
+    if [ "$2" == "up" ]
+    then
+      a1=(A B C D E F G H I J K L M N O P Q R S T U V W X Y Z)
+      a2=(a b c d e f g h i j k l m n o p q r s t u v w x y z)
+    else
+      a1=(a b c d e f g h i j k l m n o p q r s t u v w x y z)
+      a2=(A B C D E F G H I J K L M N O P Q R S T U V W X Y Z)
+    fi
+
+    for ((tmp=0;tmp<${#a1[*]};tmp++))
+    do
+      str=${str//${a2[$tmp]}/${a1[$tmp]}};
+    done
+    echo $str
+  else
+    if [ "$2" == "up" ]
+    then
+      echo ${1^,}
+    else
+      echo ${1,,}
+    fi
+  fi
+  return 0
+}
+
 __go_version() {
   which go >/dev/null || {
     return
@@ -89,7 +119,7 @@ __go_version() {
 
 __detect_os() {
   platform="$(uname -s)"
-  echo "${platform,,}"
+  echo $(__str_to_x_case $platform "down")
 }
 
 __detect_arch() {

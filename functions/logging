@@ -1,7 +1,7 @@
 
 info() {
   msg="$*"
-  printf "# %b\n" "${msg^}"
+  printf "# %b\n" "$(__str_to_x_case "${msg:0:1}" "up")${msg:1:${#msg}}"
 }
 
 display() {
