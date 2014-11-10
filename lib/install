@@ -57,7 +57,7 @@ install_binary() {
 
   local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
 
-  local tmpdir=$(mktemp -d)
+  local tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
   local dl_link="$RODENT_GO_RELEASES_DL"
 
   if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]

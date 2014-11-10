@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-RODENT_GOROOT_TOP=$(mktemp -d)
+RODENT_GOROOT_TOP="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
 export RODENT_GOROOT_TOP
 
 #versions=($(./rodent install -l |grep "go"))
