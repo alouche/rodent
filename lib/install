@@ -1,6 +1,7 @@
 ## Usage: rodent install [options] <version>
 ##        -s  Set the version globally after install
 ##        -p  Cross-compile for a specific platform
+##        -f  Force installation
 ##        
 ##        -l  List all available versions
 
@@ -107,10 +108,10 @@ install_binary() {
 
 . "$RODENT_HOME/share/releases" || {
   error "could not locate $RODENT_HOME/share/releases"
-  fatal "try running 'git pull' inside $RODENT_HOME"
+  fatal "try running 'rodent system -u'"
 }
 
-while getopts ":hlsp:" opts
+while getopts ":hlsfp:" opts
 do
   case $opts in
   h|\?)
@@ -122,6 +123,9 @@ do
     ;;
   p)
     platform=$OPTARG
+    ;;
+  f)
+    force_installation=true
     ;;
   s)
     set_globally=true
@@ -143,8 +147,8 @@ platform="$(__detect_os)_$(__detect_arch) $platform"
 supported_platforms="darwin_386 darwin_amd64 dragonfly_386 dragonfly_amd64 freebsd_386 freebsd_amd64 freebsd_arm linux_386 linux_amd64 linux_arm netbsd_386 netbsd_amd64 netbsd_arm openbsd_386 openbsd_amd64 plan9_386 plan9_amd64 solaris_amd64 windows_386 windows_amd64"
 
 RODENT_GO_RELEASE_INDEX=$(__str_in_array "${RODENT_GO_RELEASES[@]}" "${golang_version:2}")
-[[ -z $RODENT_GO_RELEASE_INDEX ]] && \
-  fatal "unknown version, run '-list' for a list of available versions"
+[[ -z $RODENT_GO_RELEASE_INDEX && ! "$force_installation" ]] && \
+  fatal "unknown version, you can run '-list' for a list of available versions or force the install with the '-f' option"
 
 for re in $platform
 do
