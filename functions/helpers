@@ -32,7 +32,8 @@ __tar() {
 
 __download() {
   code=$(__curl "$1" --write-out %{http_code} --output "$2") 
-  (( code == 200 )) || fatal "the download failed, please retry later..."
+  (( code == 200 )) || return 1
+  return 0
 }
 
 __untar() {

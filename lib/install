@@ -58,18 +58,15 @@ install_binary() {
   local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
 
   local tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
-  local dl_link="$RODENT_GO_RELEASES_DL"
 
   if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
   then
     info "downloading golang source $version"
 
-    if [[ "$RODENT_GO_RELEASE_INDEX" -gt 5 ]]
-    then
-      dl_link="$RODENT_GO_RELEASES_DL_LEGACY"
-    fi
-
-    __download "$dl_link/$version.src.tar.gz" "$tmpdir/$version"
+    ( __download "$RODENT_GO_RELEASES_DL/$version.src.tar.gz" "$tmpdir/$version" || \
+      __download "$RODENT_GO_RELEASES_DL_LEGACY/$version.src.tar.gz" "$tmpdir/$version" ) || {
+          fatal "the download failed, please retry later..."
+        }
 
     info "untarring binary to $RODENT_GOROOT_TOP"
     __untar "$tmpdir/$version" "$RODENT_GOROOT_TOP/$version"
@@ -86,7 +83,12 @@ install_binary() {
   }
 
   info "downloading binary distribution $release"
-  __download "$dl_link/$release" "$tmpdir/$release" 
+    
+  ( __download "$RODENT_GO_RELEASES_DL/$release" "$tmpdir/$release" || \
+      __download "$RODENT_GO_RELEASES_DL_LEGACY/$release" "$tmpdir/$release" ) || {
+        fatal "the download failed, please retry later..."
+    }
+
   __untar "$tmpdir/$release" "$tmpdir/$version-$GOOS-$GOARCH"
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/pkg/${GOOS}_$GOARCH/" "$RODENT_GOROOT_TOP/$version/pkg/"
   ( cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/src/runtime/z"*"_${GOOS}_$GOARCH."* "$RODENT_GOROOT_TOP/$version/src/runtime/" || \
