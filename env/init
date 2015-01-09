@@ -1,0 +1,95 @@
+
+. "$RODENT_HOME/env/settings"
+
+localdir="$PWD"
+
+[[ -z "$RODENT_DISABLE_REVERSE_SEARCH" ]] || {
+  pushd .
+  while [[ "$PWD" != '/' ]]
+  do
+    [[ -e ".rodentrc" ]] && {
+      break
+    }
+    cd ..
+  done
+  localdir="$PWD"
+  popd
+}
+
+. "$RODENT_HOME/.rodentrc"
+
+[[ -f "$localdir/.rodentrc" ]] && {
+  allow_local_rc=true
+
+  [[ -z "$RODENT_DISABLE_RC_SECURITY" ]] && {
+    if ! grep -Fxqs "$localdir" "$RODENT_HOME/local/trusted-paths"
+    then
+      echo "!!! Untrusted rodentrc found at $localdir !!!"
+      read -p "Trust location and load? " -n 1 -r
+      echo
+      if [[ $REPLY =~ ^[Yy]$ ]]
+      then
+        [[ -d "$RODENT_HOME/local" ]] || {
+          mkdir "$RODENT_HOME/local" || {
+            echo "failed to create $RODENT_HOME/local"
+            exit 1
+          }
+        }
+
+        echo "$localdir" >> "$RODENT_HOME/local/trusted-paths" || {
+          echo "could not add localdir to trusted listing"
+        }
+      else
+        allow_local_rc=false
+      fi
+    fi
+  }
+
+  if $allow_local_rc
+  then
+    . "$localdir/.rodentrc" || {
+      echo "an error occured, could not source $localdir/.rodentrc"
+      exit 1
+    }
+  fi
+}
+
+[[ -z "$RODENT_ENV" ]] || {
+  rodent_env="_$RODENT_ENV"
+}
+
+# rodent variables expansion
+gover_set="gover$rodent_env"
+gobin_set="gobin$rodent_env"
+gopath_set="gopath$rodent_env"
+godeps_set="godeps$rodent_env"
+
+gover="${RODENT_GOLANG_VERSION:-${!gover_set}}"
+[[ -z "$gover" ]] && {
+  echo "no version of go was set"
+  echo "you can set a go version by executing \"rodent set -g go<ver>\""
+  exit 1
+}
+
+goroot="$RODENT_GOROOT_TOP/$gover"
+[[ -x "$goroot/bin/$prog" ]] || {
+  echo "the version of go \"$gover\" you wish to use does not exists or is broken"
+  echo "you can verify your installation by executing \"rodent versions\""
+  exit 1
+}
+export GOROOT="$goroot"
+
+[[ -z ${!gopath_set} ]] || {
+  GOPATH=${!gopath_set}:$GOPATH
+}
+
+[[ -z ${!godeps_set} ]] || {
+  GOPATH=${!godeps_set}:$GOPATH
+}
+
+export GOPATH
+
+GOBIN=${GOBIN:-${!gobin_set}}
+export GOBIN
+
+export PATH="$goroot/bin:$PATH"

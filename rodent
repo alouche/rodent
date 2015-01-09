@@ -2,6 +2,7 @@
 ## Usage: rodent [command] [args]
 ##        help        Display the help
 ##        set         Set a version of Go
+##        init        Init current shell 
 ##        install     Install a version of Go
 ##        versions    Display installed/in-use version(s)
 ##        uninstall   Uninstall a version of Go

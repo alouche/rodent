@@ -1,0 +1,3 @@
+
+. "$RODENT_HOME/env/init"
+exec $SHELL
