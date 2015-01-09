@@ -11,7 +11,26 @@ rodent is a shell (bash) application which:
 
 This is achieved without getting in your way or hijacking your shell executables/builtins by making use of [shims](http://en.wikipedia.org/wiki/Shim_%28computing%29).
 
-[Screencast](https://asciinema.org/a/10504)
+## In a nutshell
+
+Screencasts
+> * [Manage multiple versions](https://asciinema.org/a/15316)
+> * [rodentrc usage](https://asciinema.org/a/15315)
+
+```bash
+$ rodent
+Usage: rodent [command] [args]
+       help        Display the help
+       set         Set a version of Go
+       init        Init current shell
+       install     Install a version of Go
+       versions    Display installed/in-use version(s)
+       uninstall   Uninstall a version of Go
+
+       system      Maintenance routines
+```
+
+For more information, checkout the [Wiki](https://github.com/alouche/rodent/wiki)
 
 ## Install
 ```bash
@@ -23,8 +42,6 @@ git clone http://github.com/alouche/rodent.git /my/path/to/rodent
 
 # Restart your existing shell or open an new one and you are set. Type "rodent".
 ```
-
-For more information, checkout the [Wiki](https://github.com/alouche/rodent/wiki)
 
 ## Highlight Features
 
@@ -63,26 +80,11 @@ export RODENT_ENV=experimental
 go build
 ```
 
-You get the idea... so feel free to refer to the [rodentrc guide](https://github.com/alouche/rodent/wiki/rodentrc-file).
+You get the idea... for more information, please refer to the [rodentrc guide](https://github.com/alouche/rodent/wiki/rodentrc-file).
 
-## Usage
+### Update rodent
 ```bash
-rodent -h
-
-# Update rodent
 rodent system -u
-
-# List Go releases
-rodent install -l
-
-# Install a Go release
-rodent install go1.2.2
-
-# Set a version of Go globally
-rodent set -g go1.2.2
-
-# Enable cross-compilation for freebsd_amd64
-rodent install -p freebsd_amd64 go1.2.2
 ```
 
 ## Cross-compilation
