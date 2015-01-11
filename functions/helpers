@@ -21,6 +21,16 @@ __curl() {
   curl -L -s -S $url
 }
 
+_git() {
+  local str="$*"
+  which git >/dev/null 2>&1 || {
+    error "rodent requires 'git'..."
+  }
+
+
+  git $str
+}
+
 __tar() {
   local arg="$*"
   which tar >/dev/null 2>&1 || {

@@ -2,93 +2,104 @@
 ##        -s  Set the version globally after install
 ##        -p  Cross-compile for a specific platform
 ##        -f  Force installation
-##        
+##
 ##        -l  List all available versions
 
-RODENT_GO_RELEASE_INDEX=0
+  RODENT_GO_RELEASE_INDEX=0
 
-list_available_versions() {
-  display "Available versions:"
+  load_available_versions() {
+    [[ -f "$RODENT_GO_RELEASES_LOCAL_TRACK" && $(((`date +%s` - `stat -L --format %Y "$RODENT_GO_RELEASES_LOCAL_TRACK"`) > ($RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T*60))) == 0 ]] && \
+      RODENT_GO_RELEASES=($(cat "$RODENT_GO_RELEASES_LOCAL_TRACK"))
+  }
 
-  for release in "${RODENT_GO_RELEASES[@]}"
-  do
-    display " go${release}"
-  done
-}
-
-check_local_setup() {
-  local version="$1"
-  local platform="$2"
-
-  if [ -d "$RODENT_GOROOT_TOP/$version/pkg/$platform" ]
-  then
-    echo 1
-    return
-  fi
-
-  echo 0
-}
-
-golang_release_xtra_tag() {
-  local os="$1"
-  local xtra
-
-  if [ "$os" = "darwin" ]
-  then
-    xtra="-osx10.6"
-    if [ "$(uname -r)" \> "12" ]
-    then
-      xtra="-osx10.8"
-    fi
-  fi
-
-  echo "$xtra"
-}
-
-install_binary() {
-  local version="$1"
-  local platform="$2"
-
-  GOOS=${platform%_*}
-  GOARCH=${platform#*_}
-  export GOOS
-  export GOARCH
-
-  local cur_platform="$(__detect_os)_$(__detect_arch)"
-
-  local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
-
-  local tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
-
-  if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
-  then
-    info "downloading golang source $version"
-
-    ( __download "$RODENT_GO_RELEASES_DL/$version.src.tar.gz" "$tmpdir/$version" || \
-      __download "$RODENT_GO_RELEASES_DL_LEGACY/$version.src.tar.gz" "$tmpdir/$version" ) || {
-          fatal "the download failed, please retry later..."
-        }
-
-    info "untarring binary to $RODENT_GOROOT_TOP"
-    __untar "$tmpdir/$version" "$RODENT_GOROOT_TOP/$version"
-  fi
-
-  pushd . > /dev/null 2>&1
-  cd "$RODENT_GOROOT_TOP/$version/src"
-
-  [[ "$platform" == "$cur_platform" ]] && {
-    ./make.bash || {
-      __cleanup "$RODENT_GOROOT_TOP/$version"
-      fatal "compilation failed - installation aborted"
+  fetch_available_versions() {
+    display "fetching upstream versions..."
+    RODENT_GO_RELEASES=($(_git ls-remote --tags $RODENT_GO_GIT_URL | grep -o 'refs/tags/go[0-9]*\.[0-9].*' | grep -o '[^\/]*$' | sort -r))
+    echo "${RODENT_GO_RELEASES[@]}" > "$RODENT_GO_RELEASES_LOCAL_TRACK" || {
+      fatal "failed to save \$RODENT_GO_RELEASES to $RODENT_GO_RELEASES_LOCAL_TRACK"
     }
   }
 
-  info "downloading binary distribution $release"
-    
-  ( __download "$RODENT_GO_RELEASES_DL/$release" "$tmpdir/$release" || \
-      __download "$RODENT_GO_RELEASES_DL_LEGACY/$release" "$tmpdir/$release" ) || {
-        fatal "the download failed, please retry later..."
+  list_available_versions() {
+    for release in "${RODENT_GO_RELEASES[@]}"
+    do
+      display " ${release}"
+    done
+  }
+
+  check_local_setup() {
+    local version="$1"
+    local platform="$2"
+
+    if [ -d "$RODENT_GOROOT_TOP/$version/pkg/$platform" ]
+    then
+      echo 1
+      return
+    fi
+
+    echo 0
+  }
+
+  golang_release_xtra_tag() {
+    local os="$1"
+    local xtra
+
+    if [ "$os" = "darwin" ]
+    then
+      xtra="-osx10.6"
+      if [ "$(uname -r)" \> "12" ]
+      then
+        xtra="-osx10.8"
+      fi
+    fi
+
+    echo "$xtra"
+  }
+
+  install_binary() {
+    local version="$1"
+    local platform="$2"
+
+    GOOS=${platform%_*}
+    GOARCH=${platform#*_}
+    export GOOS
+    export GOARCH
+
+    local cur_platform="$(__detect_os)_$(__detect_arch)"
+
+    local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
+
+    local tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
+
+    if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
+    then
+      info "downloading golang source $version"
+
+      ( __download "$RODENT_GO_RELEASES_DL/$version.src.tar.gz" "$tmpdir/$version" || \
+        __download "$RODENT_GO_RELEASES_DL_LEGACY/$version.src.tar.gz" "$tmpdir/$version" ) || {
+            fatal "the download failed, please retry later..."
+          }
+
+      info "untarring binary to $RODENT_GOROOT_TOP"
+      __untar "$tmpdir/$version" "$RODENT_GOROOT_TOP/$version"
+    fi
+
+    pushd . > /dev/null 2>&1
+    cd "$RODENT_GOROOT_TOP/$version/src"
+
+    [[ "$platform" == "$cur_platform" ]] && {
+      ./make.bash || {
+        __cleanup "$RODENT_GOROOT_TOP/$version"
+        fatal "compilation failed - installation aborted"
+      }
     }
+
+    info "downloading binary distribution $release"
+
+    ( __download "$RODENT_GO_RELEASES_DL/$release" "$tmpdir/$release" || \
+        __download "$RODENT_GO_RELEASES_DL_LEGACY/$release" "$tmpdir/$release" ) || {
+          fatal "the download failed, please retry later..."
+      }
 
   __untar "$tmpdir/$release" "$tmpdir/$version-$GOOS-$GOARCH"
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/pkg/${GOOS}_$GOARCH/" "$RODENT_GOROOT_TOP/$version/pkg/"
@@ -110,6 +121,8 @@ install_binary() {
   error "could not locate $RODENT_HOME/share/releases"
   fatal "try running 'rodent system -u'"
 }
+
+load_available_versions || fetch_available_versions
 
 while getopts ":hlsfp:" opts
 do
@@ -146,7 +159,7 @@ platform="$(__detect_os)_$(__detect_arch) $platform"
 
 supported_platforms="darwin_386 darwin_amd64 dragonfly_386 dragonfly_amd64 freebsd_386 freebsd_amd64 freebsd_arm linux_386 linux_amd64 linux_arm netbsd_386 netbsd_amd64 netbsd_arm openbsd_386 openbsd_amd64 plan9_386 plan9_amd64 solaris_amd64 windows_386 windows_amd64"
 
-RODENT_GO_RELEASE_INDEX=$(__str_in_array "${RODENT_GO_RELEASES[@]}" "${golang_version:2}")
+RODENT_GO_RELEASE_INDEX=$(__str_in_array "${RODENT_GO_RELEASES[@]}" "${golang_version}")
 [[ -z $RODENT_GO_RELEASE_INDEX && ! "$force_installation" ]] && \
   fatal "unknown version, you can run '-list' for a list of available versions or force the install with the '-f' option"
 

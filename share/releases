@@ -1,13 +1,16 @@
 declare -a RODENT_GO_RELEASES
 
-# TODO(aabbas) fetch this from remote somehow...
-RODENT_GO_RELEASES=('1.4' '1.4rc2' '1.4rc1' '1.4beta1' '1.3.3' '1.3.2' '1.3.1' '1.3rc2' '1.3rc1' '1.3' '1.2.2' '1.1.2' '1.1.1' '1.1beta1' '1.1' '1.0.3' '1.0.2' '1.0.1' 'go1'
-)
+RODENT_GO_GIT_URL="https://github.com/golang/go"
 
 RODENT_GO_RELEASES_DL="https://storage.googleapis.com/golang"
 
 # Mostly for legacy binaries which were not moved to the new location
 RODENT_GO_RELEASES_DL_LEGACY="https://go.googlecode.com/files"
+
+RODENT_GO_RELEASES_LOCAL_TRACK="$RODENT_HOME/share/.go-releases"
+
+# Interval is expressed in mn
+RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T=5
 
 export RODENT_GO_RELEASES
 export RODENT_GO_RELEASES_DL

@@ -2,3 +2,4 @@ releases/
 gos
 .rodentrc
 local
+.go-releases
