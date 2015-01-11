@@ -157,15 +157,13 @@ golang_version="$1"
 
 platform="$(__detect_os)_$(__detect_arch) $platform"
 
-supported_platforms="darwin_386 darwin_amd64 dragonfly_386 dragonfly_amd64 freebsd_386 freebsd_amd64 freebsd_arm linux_386 linux_amd64 linux_arm netbsd_386 netbsd_amd64 netbsd_arm openbsd_386 openbsd_amd64 plan9_386 plan9_amd64 solaris_amd64 windows_386 windows_amd64"
-
 RODENT_GO_RELEASE_INDEX=$(__str_in_array "${RODENT_GO_RELEASES[@]}" "${golang_version}")
 [[ -z $RODENT_GO_RELEASE_INDEX && ! "$force_installation" ]] && \
   fatal "unknown version, you can run '-list' for a list of available versions or force the install with the '-f' option"
 
 for re in $platform
 do
-  __str_in_list "$re" "$supported_platforms" || {
+  __str_in_list "$re" "$RODENT_GO_SUPPORTED_PLATFORMS" || {
     info "this platform $re is not supported, skipping..."
     continue
   }
