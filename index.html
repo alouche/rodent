@@ -3,33 +3,33 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <title>Rodent by alouche</title>
   </head>
 
   <body>
-
     <header>
-      <div class="container">
+      <div class="inner">
         <h1>Rodent</h1>
         <h2>Manage Go Versions/Projects/Dependencies</h2>
-
-        <section id="downloads">
-          <a href="https://github.com/alouche/rodent/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/alouche/rodent/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/alouche/rodent" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
+        <a href="https://github.com/alouche/rodent" class="button"><small>View project on</small> GitHub</a>
       </div>
     </header>
 
-    <div class="container">
-      <section id="main_content">
-        <h1>
-<a name="rodent" class="anchor" href="#rodent"><span class="octicon octicon-link"></span></a>rodent</h1>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="rodent" class="anchor" href="#rodent" aria-hidden="true"><span class="octicon octicon-link"></span></a>rodent</h1>
 
 <p><a href="https://drone.io/github.com/alouche/rodent/latest"><img src="https://drone.io/github.com/alouche/rodent/status.png" alt="Build Status"></a></p>
 
@@ -41,150 +41,128 @@
 <li>Allows cross-compile builds for different platform targets (cgo/stdlib <a href="https://groups.google.com/d/msg/golang-nuts/2XoGUvBalcw/ErSWiTlO17kJ">workaround</a>).</li>
 <li>Manages/tracks librairies dependencies by expanding the GOPATH</li>
 <li>Create separate workflows within a project per environment (i.e: build projectA with ENV="PRD" on go1.2.2 and ENV="DEV" on go1.3beta2)</li>
-</ul><p>This is achieved without getting in your way or hijacking your shell executables/builtins by making use of <a href="http://en.wikipedia.org/wiki/Shim_%28computing%29">shims</a>.</p>
+</ul>
+
+<p>This is achieved without getting in your way or hijacking your shell executables/builtins by making use of <a href="http://en.wikipedia.org/wiki/Shim_%28computing%29">shims</a>.</p>
 
 <h2>
-<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+<a id="in-a-nutshell" class="anchor" href="#in-a-nutshell" aria-hidden="true"><span class="octicon octicon-link"></span></a>In a nutshell</h2>
+
+<p>Screencasts</p>
 
 <blockquote>
-<p>git clone <a href="http://github.com/alouhe/rodent.git">http://github.com/alouhe/rodent.git</a> /my/path/to/rodent</p>
+<ul>
+<li><a href="https://asciinema.org/a/15316">Manage multiple versions</a></li>
+<li><a href="https://asciinema.org/a/15315">rodentrc usage</a></li>
+</ul>
 </blockquote>
 
-<p>Add in your .bashrc, profile etc.</p>
+<div class="highlight highlight-bash"><pre>$ rodent
+Usage: rodent [<span class="pl-s3">command</span>] [args]
+       <span class="pl-s3">help</span>        Display the <span class="pl-s3">help</span>
+       <span class="pl-s3">set</span>         Set a version of Go
+       init        Init current shell
+       install     Install a version of Go
+       versions    Display installed/<span class="pl-k">in</span>-use version(s)
+       uninstall   Uninstall a version of Go
 
-<blockquote>
-<p>[[ -s "/my/path/to/rodent" ]] &amp;&amp; source "/my/path/to/rodent"</p>
-</blockquote>
+       system      Maintenance routines</pre></div>
 
-<p>Restart your existing shell or open an new one and you are set. Type "rodent".</p>
+<p>For more information, checkout the <a href="https://github.com/alouche/rodent/wiki">Wiki</a></p>
 
 <h2>
-<a name="highlight-features" class="anchor" href="#highlight-features"><span class="octicon octicon-link"></span></a>Highlight Features</h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<div class="highlight highlight-bash"><pre>git clone http://github.com/alouche/rodent.git /my/path/to/rodent
+
+<span class="pl-c"># Add in your .bashrc, profile etc.</span>
+
+[[ <span class="pl-k">-s</span> <span class="pl-s1"><span class="pl-pds">"</span>/my/path/to/rodent<span class="pl-pds">"</span></span> ]] <span class="pl-k">&amp;&amp;</span> <span class="pl-s3">source</span> <span class="pl-s1"><span class="pl-pds">"</span>/my/path/to/rodent<span class="pl-pds">"</span></span>
+
+<span class="pl-c"># Restart your existing shell or open an new one and you are set. Type "rodent".</span></pre></div>
+
+<h2>
+<a id="highlight-features" class="anchor" href="#highlight-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Highlight Features</h2>
 
 <ul>
-<li>
-<p>Define a specific go version per project source/directory</p>
+<li>Define a specific go version per project source/directory</li>
+</ul>
 
-<blockquote>
-<p>echo "gover=go1.2.2" &gt;&gt; .rodentrc</p>
-</blockquote>
+<div class="highlight highlight-bash"><pre><span class="pl-s3">echo</span> <span class="pl-s1"><span class="pl-pds">"</span>gover=go1.2.2<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> .rodentrc
 
-<p>run "go build"</p>
+<span class="pl-c"># Build your project</span>
+go build
 
-<p>Want to switch between multiple go versions in the same project (for testing new builds)</p>
+<span class="pl-c"># Want to switch between multiple go versions in the same project (for testing new builds)</span>
+<span class="pl-s3">echo</span> <span class="pl-s1"><span class="pl-pds">"</span>gover_ATAG=go1.3beta2<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> .rodentrc
 
-<blockquote>
-<p>echo "gover_ATAG=go1.3beta2" &gt;&gt; .rodentrc</p>
-</blockquote>
+<span class="pl-c"># Export your tag as variable</span>
+<span class="pl-s">export</span> RODENT_ENV=ATAG
 
-<p>run</p>
+<span class="pl-c"># Build your project</span>
+go build</pre></div>
 
-<blockquote>
-<p>export RODENT_ENV=ATAG; go build</p>
-</blockquote>
+<p>Any rodent variables when suffixed with "_" are scopped as variables for the defined enviroment scope ; variables without these  suffixes are used as default variables</p>
 
-<p>Any rodent variables when suffixed with "_" are scopped as variables for the defined enviroment scope </p>
+<ul>
+<li>Keep track of your project third party libraries</li>
+</ul>
 
-<p>variables without these  suffixes are used as default variables</p>
-</li>
-<li>
-<p>Keep track of your project third party libraries</p>
+<div class="highlight highlight-bash"><pre><span class="pl-s3">echo</span> <span class="pl-s1"><span class="pl-pds">"</span>godeps=/my/project/workspace<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> .rodentrc
 
-<blockquote>
-<p>echo "godeps=/my/project/workspace" &gt;&gt; .rodentrc</p>
-</blockquote>
+<span class="pl-c"># A dependency target per environment? easy...</span>
+<span class="pl-s3">echo</span> <span class="pl-s1"><span class="pl-pds">"</span>godeps_production=./local/prd/path<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> .rodentrc
+<span class="pl-s3">echo</span> <span class="pl-s1"><span class="pl-pds">"</span>godeps_development=./local/dev/path<span class="pl-pds">"</span></span> <span class="pl-k">&gt;&gt;</span> .rodentrc
 
-<p>A dependency target per environment? easy...</p>
+<span class="pl-c"># Fetch your dependencies</span>
+<span class="pl-s">export</span> RODENT_ENV=production
+go get
 
-<blockquote>
-<p>echo "godeps_production=./local/prd/path" &gt;&gt; .rodentrc</p>
+<span class="pl-c"># Alternatively</span>
+<span class="pl-s">export</span> RODENT_ENV=experimental
+go build</pre></div>
 
-<p>echo "godeps_development=./local/dev/path" &gt;&gt; .rodentrc</p>
-</blockquote>
+<p>You get the idea... for more information, please refer to the <a href="https://github.com/alouche/rodent/wiki/rodentrc-file">rodentrc guide</a>.</p>
 
-<p>run</p>
+<h3>
+<a id="update-rodent" class="anchor" href="#update-rodent" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update rodent</h3>
 
-<blockquote>
-<p>export RODENT_ENV=production; go get</p>
-</blockquote>
-
-<p>or</p>
-
-<blockquote>
-<p>export RODENT_ENV=experimental; go build</p>
-</blockquote>
-</li>
-</ul><p>You get the idea... so feel free to refer to the <a href="https://github.com/alouche/rodent/wiki/rodentrc-file">rodentrc guide</a>.</p>
+<div class="highlight highlight-bash"><pre>rodent system -u</pre></div>
 
 <h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="cross-compilation" class="anchor" href="#cross-compilation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cross-compilation</h2>
 
-<blockquote>
-<p>rodent -h</p>
-</blockquote>
-
-<h3>
-<a name="update-rodent" class="anchor" href="#update-rodent"><span class="octicon octicon-link"></span></a>Update rodent</h3>
-
-<blockquote>
-<p>rodent system -u</p>
-</blockquote>
-
-<h3>
-<a name="list-go-releases" class="anchor" href="#list-go-releases"><span class="octicon octicon-link"></span></a>List Go releases</h3>
-
-<blockquote>
-<p>rodent install -l</p>
-</blockquote>
-
-<h3>
-<a name="install-a-go-release" class="anchor" href="#install-a-go-release"><span class="octicon octicon-link"></span></a>Install a Go release</h3>
-
-<blockquote>
-<p>rodent install go1.2.2</p>
-</blockquote>
-
-<h3>
-<a name="set-a-version-of-go-globally" class="anchor" href="#set-a-version-of-go-globally"><span class="octicon octicon-link"></span></a>Set a version of Go globally</h3>
-
-<blockquote>
-<p>rodent set -g go1.2.2</p>
-</blockquote>
-
-<h3>
-<a name="enable-cross-compilation-for-freebsd_amd64" class="anchor" href="#enable-cross-compilation-for-freebsd_amd64"><span class="octicon octicon-link"></span></a>Enable cross-compilation for freebsd_amd64</h3>
-
-<blockquote>
-<p>rodent install -p freebsd_amd64 go1.2.2</p>
-</blockquote>
-
-<p>For more info, refer to <a href="https://github.com/alouche/rodent/wiki/cross-compilation-setup">cross-compilation environment</a></p>
+<p>Please refer to <a href="https://github.com/alouche/rodent/wiki/cross-compilation-setup">cross-compilation environment</a></p>
 
 <h2>
-<a name="why-this-project" class="anchor" href="#why-this-project"><span class="octicon octicon-link"></span></a>Why this project?</h2>
+<a id="why-this-project" class="anchor" href="#why-this-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why this project?</h2>
 
 <ul>
 <li>I wanted something light/small which allowed all the above while being transparent and out of the way.</li>
 <li>Managing and tracking my third party libraries by maintaining a separate directory per project which I could simply "tar; cp and or even git submodule.." </li>
 <li>I prefer using a custom GOPATH per project (or sometimes have a unique GOPATH for a subset of projects) and wanted to keep the "standard go workflow way of things" while maintaining that flexiblity/option.</li>
 <li>This is an experiment.</li>
-</ul><h3>
-<a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h3>
+</ul>
+
+<h3>
+<a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disclaimer</h3>
 
 <p>This project is relatively new and not perfect. It still requires a lot of work and does not pretend to be better than the numerous awesome tools the Golang community has created. It is just one way of tackling "Go version and dependency management", if you like it, use it and feel free to contribute.</p>
 
 <h2>
-<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
 
 <p>rodent is not locked to a specific way of doing things, so if you have or found a better way to do things or tackle some of the challenges listed here, then I would love to hear of it, so "Go" forth - fork, patch, submit and inspire. The only dependency is that rodent should remain non-intrusive to the user's workflow and relatively light.</p>
 
 <h2>
-<a name="other-tools-in-the-same-category" class="anchor" href="#other-tools-in-the-same-category"><span class="octicon octicon-link"></span></a>Other tools in the same category</h2>
+<a id="other-tools-in-the-same-category" class="anchor" href="#other-tools-in-the-same-category" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other tools in the same category</h2>
 
 <ul>
 <li><a href="https://github.com/moovweb/gvm">GVM</a></li>
-</ul><h2>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>(The MIT License)</p>
 
@@ -208,9 +186,25 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </p>
-      </section>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/alouche/rodent/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/alouche/rodent/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/alouche/rodent"></a> is maintained by <a href="https://github.com/alouche">alouche</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
 
-    
+  
   </body>
 </html>
