@@ -1,0 +1,10 @@
+# Global
+gopath=$PWD/
+
+# Production
+godeps=$PWD/.deps
+gover=go1.4
+
+# Development
+gover_dev=tip
+godeps_dev=$PWD/.deps_dev
