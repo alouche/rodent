@@ -14,8 +14,14 @@ This is achieved without getting in your way or hijacking your shell executables
 ## In a nutshell
 
 Screencasts
-> * [Manage multiple versions](https://asciinema.org/a/15316)
-> * [rodentrc usage](https://asciinema.org/a/15315)
+
+Manage multiple versions:
+
+[![asciicast](https://asciinema.org/a/15316.png)](https://asciinema.org/a/15316)
+
+rodentrc usage:
+
+[![asciicast](https://asciinema.org/a/15315.png)](https://asciinema.org/a/15315)
 
 ```bash
 $ rodent
