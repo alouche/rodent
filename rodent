@@ -11,7 +11,7 @@
 
 # OSX lacks "readlink -f"
 __abs_path_name() {
-  DIR=$("${1%/*}")
+  DIR="${1%/*}"
   (cd "$DIR" && pwd -P)
 }
 
