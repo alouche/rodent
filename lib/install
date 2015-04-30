@@ -5,8 +5,6 @@
 ##
 ##        -l  List all available versions
 
-  RODENT_GO_RELEASE_INDEX=0
-
   load_available_versions() {
     [[ -f "$RODENT_GO_RELEASES_LOCAL_TRACK" && $((($(date +%s) - $(stat -L --format %Y "$RODENT_GO_RELEASES_LOCAL_TRACK")) > (RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T*60))) == 0 ]] && \
       RODENT_GO_RELEASES=($(cat "$RODENT_GO_RELEASES_LOCAL_TRACK"))
@@ -160,13 +158,16 @@ golang_version="$1"
 
 platform="$(__detect_os)_$(__detect_arch) $platform"
 
-RODENT_GO_RELEASE_INDEX=$(__str_in_array "${RODENT_GO_RELEASES[@]}" "${golang_version}")
-[[ -z $RODENT_GO_RELEASE_INDEX && ! "$force_installation" ]] && \
-  fatal "unknown version, you can run '-list' for a list of available versions or force the install with the '-f' option"
+__str_in_array "${golang_version}" "${RODENT_GO_RELEASES[@]}" || {
+  if [[ ! "$force_installation" ]]
+  then
+    fatal "unknown version, you can run '-list' for a list of available versions or force the install with the '-f' option"
+  fi
+}
 
 for re in $platform
 do
-  __str_in_list "$re" "$RODENT_GO_SUPPORTED_PLATFORMS" || {
+  __str_in_array "$re" "${RODENT_GO_SUPPORTED_PLATFORMS[@]}" || {
     info "this platform $re is not supported, skipping..."
     continue
   }
