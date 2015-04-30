@@ -8,13 +8,13 @@
   RODENT_GO_RELEASE_INDEX=0
 
   load_available_versions() {
-    [[ -f "$RODENT_GO_RELEASES_LOCAL_TRACK" && $(((`date +%s` - `stat -L --format %Y "$RODENT_GO_RELEASES_LOCAL_TRACK"`) > ($RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T*60))) == 0 ]] && \
+    [[ -f "$RODENT_GO_RELEASES_LOCAL_TRACK" && $((($(date +%s) - $(stat -L --format %Y "$RODENT_GO_RELEASES_LOCAL_TRACK")) > (RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T*60))) == 0 ]] && \
       RODENT_GO_RELEASES=($(cat "$RODENT_GO_RELEASES_LOCAL_TRACK"))
   }
 
   fetch_available_versions() {
     display "fetching upstream versions..."
-    RODENT_GO_RELEASES=($(_git ls-remote --tags $RODENT_GO_GIT_URL | grep -o 'refs/tags/go[0-9]*\.[0-9].*' | grep -o '[^\/]*$' | sort -r))
+    RODENT_GO_RELEASES=($(_git ls-remote --tags "$RODENT_GO_GIT_URL" | grep -o 'refs/tags/go[0-9]*\.[0-9].*' | grep -o '[^\/]*$' | sort -r))
     echo "${RODENT_GO_RELEASES[@]}" > "$RODENT_GO_RELEASES_LOCAL_TRACK" || {
       fatal "failed to save \$RODENT_GO_RELEASES to $RODENT_GO_RELEASES_LOCAL_TRACK"
     }
@@ -65,11 +65,14 @@
     export GOOS
     export GOARCH
 
-    local cur_platform="$(__detect_os)_$(__detect_arch)"
+    local cur_platform
+    cur_platform="$(__detect_os)_$(__detect_arch)"
 
-    local release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
+    local release
+    release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
 
-    local tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
+    local tmpdir
+    tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
 
     if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
     then

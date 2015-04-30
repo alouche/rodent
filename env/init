@@ -72,7 +72,7 @@ gover="${RODENT_GOLANG_VERSION:-${!gover_set}}"
 }
 
 goroot="$RODENT_GOROOT_TOP/$gover"
-[[ -x "$goroot/bin/$prog" ]] || {
+[[ -x "$goroot/bin/go" ]] || {
   echo "the version of go \"$gover\" you wish to use does not exists or is broken"
   echo "you can verify your installation by executing \"rodent versions\""
   exit 1

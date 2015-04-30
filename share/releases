@@ -1,18 +1,18 @@
 declare -a RODENT_GO_RELEASES
 
-RODENT_GO_GIT_URL="https://github.com/golang/go"
+export RODENT_GO_GIT_URL="https://github.com/golang/go"
 
-RODENT_GO_RELEASES_DL="https://storage.googleapis.com/golang"
+export RODENT_GO_RELEASES_DL="https://storage.googleapis.com/golang"
 
 # Mostly for legacy binaries which were not moved to the new location
 RODENT_GO_RELEASES_DL_LEGACY="https://go.googlecode.com/files"
 
-RODENT_GO_RELEASES_LOCAL_TRACK="$RODENT_HOME/share/.go-releases"
+export RODENT_GO_RELEASES_LOCAL_TRACK="$RODENT_HOME/share/.go-releases"
 
 # Interval is expressed in mn
-RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T=5
+export RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T=5
 
-RODENT_GO_SUPPORTED_PLATFORMS="darwin_386 darwin_amd64 dragonfly_386 dragonfly_amd64 freebsd_386 freebsd_amd64 freebsd_arm linux_386 linux_amd64 linux_arm netbsd_386 netbsd_amd64 netbsd_arm openbsd_386 openbsd_amd64 plan9_386 plan9_amd64 solaris_amd64 windows_386 windows_amd64"
+export RODENT_GO_SUPPORTED_PLATFORMS="darwin_386 darwin_amd64 dragonfly_386 dragonfly_amd64 freebsd_386 freebsd_amd64 freebsd_arm linux_386 linux_amd64 linux_arm netbsd_386 netbsd_amd64 netbsd_arm openbsd_386 openbsd_amd64 plan9_386 plan9_amd64 solaris_amd64 windows_386 windows_amd64"
 
 export RODENT_GO_RELEASES
 export RODENT_GO_RELEASES_DL

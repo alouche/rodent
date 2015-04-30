@@ -2,7 +2,7 @@
 ## Usage: rodent [command] [args]
 ##        help        Display the help
 ##        set         Set a version of Go
-##        init        Init current shell 
+##        init        Init current shell
 ##        install     Install a version of Go
 ##        versions    Display installed/in-use version(s)
 ##        uninstall   Uninstall a version of Go
@@ -11,9 +11,9 @@
 
 # OSX lacks "readlink -f"
 __abs_path_name() {
-  DIR=$(echo "${1%/*}")
-  (cd "$DIR" && echo "$(pwd -P)")
-}  
+  DIR=$("${1%/*}")
+  (cd "$DIR" && pwd -P)
+}
 
 [[ $BASH_SOURCE != $0 ]] && {
   RODENT_HOME=$(__abs_path_name "${BASH_SOURCE:-$0}")

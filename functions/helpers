@@ -41,7 +41,7 @@ __tar() {
 }
 
 __download() {
-  code=$(__curl "$1" --write-out %{http_code} --output "$2") 
+  code=$(__curl "$1" --write-out %\{http_code\} --output "$2")
   (( code == 200 )) || return 1
   return 0
 }
@@ -90,9 +90,9 @@ __str_in_array() {
 }
 
 __str_to_x_case() {
-  if [ ${BASH_VERSINFO[0]} -lt 4 ]
+  if [ "${BASH_VERSINFO[0]}" -lt 4 ]
   then
-    local str ul ll tmp
+    local str
     str="$1";
     if [ "$2" == "up" ]
     then
@@ -107,13 +107,13 @@ __str_to_x_case() {
     do
       str=${str//${a2[$tmp]}/${a1[$tmp]}};
     done
-    echo $str
+    echo "$str"
   else
     if [ "$2" == "up" ]
     then
-      echo ${1^,}
+      echo "${1^,}"
     else
-      echo ${1,,}
+      echo "${1,,}"
     fi
   fi
   return 0
@@ -124,13 +124,14 @@ __go_version() {
     return
   }
 
-  local version="$(go version)"
+  local version
+  version="$(go version)"
   echo "$version"
 }
 
 __detect_os() {
   platform="$(uname -s)"
-  echo $(__str_to_x_case $platform "down")
+  __str_to_x_case "$platform" "down"
 }
 
 __detect_arch() {
