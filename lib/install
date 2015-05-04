@@ -5,102 +5,103 @@
 ##
 ##        -l  List all available versions
 
-  load_available_versions() {
-    [[ -f "$RODENT_GO_RELEASES_LOCAL_TRACK" && $((($(date +%s) - $(stat -L --format %Y "$RODENT_GO_RELEASES_LOCAL_TRACK")) > (RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T*60))) == 0 ]] && \
+load_available_versions() {
+  [[ -f "$RODENT_GO_RELEASES_LOCAL_TRACK" && $((($(date +%s) - $(stat -L --format %Y "$RODENT_GO_RELEASES_LOCAL_TRACK")) > (RODENT_GO_RELEASES_TRACK_LAST_UPDATE_T*60))) == 0 ]] && \
       RODENT_GO_RELEASES=($(cat "$RODENT_GO_RELEASES_LOCAL_TRACK"))
+}
+
+fetch_available_versions() {
+  display "fetching upstream versions..."
+  RODENT_GO_RELEASES=($(_git ls-remote --tags "$RODENT_GO_GIT_URL" | grep -o 'refs/tags/go[0-9]*\.[0-9].*' | grep -o '[^\/]*$' | sort -r))
+  echo "${RODENT_GO_RELEASES[@]}" > "$RODENT_GO_RELEASES_LOCAL_TRACK" || {
+    fatal "failed to save \$RODENT_GO_RELEASES to $RODENT_GO_RELEASES_LOCAL_TRACK"
   }
+}
 
-  fetch_available_versions() {
-    display "fetching upstream versions..."
-    RODENT_GO_RELEASES=($(_git ls-remote --tags "$RODENT_GO_GIT_URL" | grep -o 'refs/tags/go[0-9]*\.[0-9].*' | grep -o '[^\/]*$' | sort -r))
-    echo "${RODENT_GO_RELEASES[@]}" > "$RODENT_GO_RELEASES_LOCAL_TRACK" || {
-      fatal "failed to save \$RODENT_GO_RELEASES to $RODENT_GO_RELEASES_LOCAL_TRACK"
-    }
-  }
+list_available_versions() {
+  for release in "${RODENT_GO_RELEASES[@]}"
+  do
+    display " ${release}"
+  done
+}
 
-  list_available_versions() {
-    for release in "${RODENT_GO_RELEASES[@]}"
-    do
-      display " ${release}"
-    done
-  }
+check_local_setup() {
+  local version="$1"
+  local platform="$2"
 
-  check_local_setup() {
-    local version="$1"
-    local platform="$2"
+  if [ -d "$RODENT_GOROOT_TOP/$version/pkg/$platform" ]
+  then
+    echo 1
+    return
+  fi
 
-    if [ -d "$RODENT_GOROOT_TOP/$version/pkg/$platform" ]
+  echo 0
+}
+
+golang_release_xtra_tag() {
+  local os="$1"
+  local xtra
+
+  if [ "$os" = "darwin" ]
+  then
+    xtra="-osx10.6"
+    if [ "$(uname -r)" \> "12" ]
     then
-      echo 1
-      return
+      xtra="-osx10.8"
     fi
+  fi
 
-    echo 0
-  }
+  echo "$xtra"
+}
 
-  golang_release_xtra_tag() {
-    local os="$1"
-    local xtra
+install_binary() {
+  local version="$1"
+  local platform="$2"
 
-    if [ "$os" = "darwin" ]
-    then
-      xtra="-osx10.6"
-      if [ "$(uname -r)" \> "12" ]
-      then
-        xtra="-osx10.8"
-      fi
-    fi
+  GOOS=${platform%_*}
+  GOARCH=${platform#*_}
 
-    echo "$xtra"
-  }
+  export GOOS
+  export GOARCH
 
-  install_binary() {
-    local version="$1"
-    local platform="$2"
+  local cur_platform
+  cur_platform="$(__detect_os)_$(__detect_arch)"
 
-    GOOS=${platform%_*}
-    GOARCH=${platform#*_}
-    export GOOS
-    export GOARCH
+  local release
+  release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
 
-    local cur_platform
-    cur_platform="$(__detect_os)_$(__detect_arch)"
+  local tmpdir
+  tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
 
-    local release
-    release="$version.$GOOS-$GOARCH$(golang_release_xtra_tag "$GOOS").tar.gz"
+  if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
+  then
+    info "downloading golang source $version"
 
-    local tmpdir
-    tmpdir="$(mktemp -d 2>/dev/null || mktemp -d -t 'rodent')"
-
-    if [ ! -d "$RODENT_GOROOT_TOP/$version/src" ]
-    then
-      info "downloading golang source $version"
-
-      ( __download "$RODENT_GO_RELEASES_DL/$version.src.tar.gz" "$tmpdir/$version" || \
+    ( __download "$RODENT_GO_RELEASES_DL/$version.src.tar.gz" "$tmpdir/$version" || \
         __download "$RODENT_GO_RELEASES_DL_LEGACY/$version.src.tar.gz" "$tmpdir/$version" ) || {
-            fatal "the download failed, please retry later..."
-          }
-
-      info "untarring binary to $RODENT_GOROOT_TOP"
-      __untar "$tmpdir/$version" "$RODENT_GOROOT_TOP/$version"
-    fi
-
-    pushd . > /dev/null 2>&1
-    cd "$RODENT_GOROOT_TOP/$version/src"
-
-    [[ "$platform" == "$cur_platform" ]] && {
-      ./make.bash || {
-        __cleanup "$RODENT_GOROOT_TOP/$version"
-        fatal "compilation failed - installation aborted"
-      }
-    }
-
-    info "downloading binary distribution $release"
-
-    ( __download "$RODENT_GO_RELEASES_DL/$release" "$tmpdir/$release" || \
-        __download "$RODENT_GO_RELEASES_DL_LEGACY/$release" "$tmpdir/$release" ) || {
           fatal "the download failed, please retry later..."
-      }
+        }
+
+    info "untarring binary to $RODENT_GOROOT_TOP"
+    __untar "$tmpdir/$version" "$RODENT_GOROOT_TOP/$version"
+  fi
+
+  pushd . > /dev/null 2>&1
+  cd "$RODENT_GOROOT_TOP/$version/src"
+
+  [[ "$platform" == "$cur_platform" ]] && {
+    ./make.bash || {
+      __cleanup "$RODENT_GOROOT_TOP/$version"
+      fatal "compilation failed - installation aborted"
+    }
+  }
+
+  info "downloading binary distribution $release"
+
+  ( __download "$RODENT_GO_RELEASES_DL/$release" "$tmpdir/$release" || \
+      __download "$RODENT_GO_RELEASES_DL_LEGACY/$release" "$tmpdir/$release" ) || {
+      fatal "the download failed, please retry later..."
+  }
 
   __untar "$tmpdir/$release" "$tmpdir/$version-$GOOS-$GOARCH"
   cp -Rf "$tmpdir/$version-$GOOS-$GOARCH/pkg/${GOOS}_$GOARCH/" "$RODENT_GOROOT_TOP/$version/pkg/"
