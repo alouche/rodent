@@ -1,5 +1,5 @@
 # rodent
-[![Build Status](https://drone.io/github.com/alouche/rodent/status.png)](https://drone.io/github.com/alouche/rodent/latest)
+[![Build Status](https://travis-ci.org/alouche/rodent.svg?branch=master)](https://travis-ci.org/alouche/rodent)
 
 rodent is a shell (bash) application which:
 
